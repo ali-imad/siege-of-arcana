@@ -4,6 +4,8 @@ import React, {useState} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.tsx";
 import Shop from "./pages/Shop.tsx";
+import Inventory from "./pages/Inventory.tsx";
+import Profile from "./pages/Profile.tsx";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,6 +17,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
