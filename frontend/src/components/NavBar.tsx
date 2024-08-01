@@ -18,7 +18,7 @@ const NavBar = (props: NavBarProps) => {
           <Link to='/shop' className="order-2 transition-colors hover:text-soa-accent">Shop</Link>
           <Link to='/profile' className="order-3 transition-colors hover:text-soa-accent">Profile</Link>
           <Link to='/inventory' className="order-3 transition-colors hover:text-soa-accent">Inventory</Link>
-          <Link to='/login' className="order-3 transition-colors hover:text-soa-accent">{isLoggedIn ? 'Log Out' : 'Register/Log In'}</Link>
+          <Link to='/login' className="order-3 transition-colors hover:text-soa-accent">{isLoggedIn ? 'Sign Out' : 'Sign In/Up'}</Link>
         </div>
       </div>
     </nav>

@@ -6,6 +6,7 @@ import Home from "./pages/Home.tsx";
 import Shop from "./pages/Shop.tsx";
 import Inventory from "./pages/Inventory.tsx";
 import Profile from "./pages/Profile.tsx";
+import Login from './pages/Login.tsx';
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,6 +20,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path='/login' element={<Login />} />
         </Routes>
       </div>
     </Router>
