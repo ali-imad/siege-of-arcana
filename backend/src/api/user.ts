@@ -6,6 +6,8 @@ import {
   getUserByID,
   updateUserByID,
   deleteUserByID,
+  getUserByName,
+  getUserByEmail,
 } from '../controllers/user';
 import logger from '../utils/logger';
 
@@ -18,13 +20,16 @@ router.post('/create', async (req, res) => {
     res.status(400).json({ error: 'Missing required fields' });
     return;
   }
-  const success = await createUser(name, email, password);
-  if (!success) {
+  const response = await createUser(name, email, password);
+  logger.debug(JSON.stringify(response))
+  const playerID = response.playerid
+  if (playerID === null) {
     logger.error('Failed to create user');
     res.status(500).json({ error: 'Failed to create user' });
     return;
   }
-  res.json({ success });
+  logger.debug(`player account created with playerid: ${playerID}`)
+  res.json({ playerID });
 });
 
 // get user profile row
@@ -45,6 +50,25 @@ router.get('/:playerID', async (req, res) => {
 
   res.json({ exists: user });
 });
+
+// get user profile row
+router.get('/name/:username', async (req, res) => {
+  const { username } = req.params;
+  
+  const user = await getUserByName(username);
+  logger.http(`200 GET /api/user/name/${username}`);
+  res.json({ user });
+});
+
+// get user profile row
+router.get('/email/:email', async (req, res) => {
+  const { email } = req.params;
+  
+  const user = await getUserByEmail(email)
+  logger.http(`200 GET /api/user/name/${email}`);
+  res.json({ user });
+});
+
 
 // edit user profile
 router.put('/:playerID', async (req, res) => {
