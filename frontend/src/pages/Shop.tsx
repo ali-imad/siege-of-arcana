@@ -1,3 +1,4 @@
+// @ts-expect-error sss
 const ShopItemDiv = ({ name, price }) => {
   return (
     <div className="bg-white border-2 border-soa-peach rounded-lg p-4 shadow-shopListing">

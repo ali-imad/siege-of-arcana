@@ -3,7 +3,7 @@ import logger from './utils/logger';
 import './utils/loadEnv';
 import { getClient, disconnect } from './services/db';
 
-const port = process.env['PORT'] || 5000;
+const port = process.env['PORT'] || 5001;
 
 const startServer = async () => {
   try {
