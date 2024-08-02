@@ -10,7 +10,7 @@ import Login from './pages/Login.tsx';
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   return (
     <Router>
       <NavBar isLoggedIn={isLoggedIn} />
