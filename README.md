@@ -2,26 +2,40 @@
 
 ## Project Overview
 
-Siege of Arcana is a relational database-driven multiplayer game featuring microtransactions, and match analytics. This is the CPSC 304 milestone project and, as a web application, mocks the players client for this (fake) online, match-based, multiplayer video game.
+Siege of Arcana is a relational database-driven multiplayer game featuring
+microtransactions, and match analytics. This is the CPSC 304 milestone project
+and, as a web application, mocks the players client for this (fake) online,
+match-based, multiplayer video game.
 
 ## Project Description
 
-Our database intends to model a player-centric client for an online, match-based, multiplayer video game. The entirety of player persistent information, centered around individual player profiles and match history, will be modeled in the database. The database will also model a centralized game shop supporting player transactions.
+Our database intends to model a player-centric client for an online,
+match-based, multiplayer video game. The entirety of player persistent
+information, centered around individual player profiles and match history, will
+be modeled in the database. The database will also model a centralized game shop
+supporting player transactions.
 
-Player profiles will be recorded, allowing users to update player information (username, email, password), view their overall game statistics (wins, losses, ranking), and their inventory (champions, skins, boosts). Match history will be recorded to provide detailed match data (participants, outcome) and each participant's individual performance (kills, assists, deaths). A marketplace for in-game items for player purchase will also be recorded, tracking item availability and promotions, as well as each player’s transaction history and currency balance.
+Player profiles will be recorded, allowing users to update player information
+(username, email, password), view their overall game statistics (wins, losses,
+ranking), and their inventory (champions, skins, boosts). Match history will be
+recorded to provide detailed match data (participants, outcome) and each
+participant's individual performance (kills, assists, deaths). A marketplace for
+in-game items for player purchase will also be recorded, tracking item
+availability and promotions, as well as each player’s transaction history and
+currency balance.
 
 ## Key Features
 
 #### Player Profiles:
 
- - Update player information: username, email, password.  
- - View overall game statistics: wins, losses, ranking.  
- - Manage inventory: cosmetics, consumables
+- Update player information: username, email, password.
+- View overall game statistics: wins, losses, ranking.
+- Manage inventory: cosmetics, consumables
 
 #### Match History:
 
 - Record match data: participants, outcome
-- Track individual performance: kills, assists, deaths, experience gained.  
+- Track individual performance: kills, assists, deaths, experience gained.
 
 #### Game Shop & Transactions:
 

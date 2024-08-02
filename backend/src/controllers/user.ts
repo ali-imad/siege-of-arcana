@@ -1,4 +1,5 @@
-import { query } from '../services/db';
+import { query, queryIsEmpty } from '../services/db';
+
 const RELATION_NAME = 'player';
 
 export async function createUser(
@@ -9,14 +10,14 @@ export async function createUser(
   const rsp = await query(
     `INSERT INTO ${RELATION_NAME} (name, email, password, 0, 0) VALUES (${name}, ${email}, ${password});`,
   );
-  return !!rsp;
+  return !queryIsEmpty(rsp);
 }
 
 export async function getUserByID(playerID: number): Promise<Boolean> {
   const rsp = await query(
     `SELECT * FROM ${RELATION_NAME} WHERE playerID=${playerID};`,
   );
-  return !!rsp;
+  return !queryIsEmpty(rsp);
 }
 
 export async function updateUserByID(
@@ -32,15 +33,13 @@ export async function updateUserByID(
     }
     valStr += `${key}=${value},`;
   }
-  const rsp = await query(
+  await query(
     `UPDATE ${RELATION_NAME} SET ${valStr} WHERE playerID=${playerID};`,
   );
-  return !!rsp;
+  return true;
 }
 
 export async function deleteUserByID(playerID: number): Promise<Boolean> {
-  const rsp = await query(
-    `DELETE FROM ${RELATION_NAME} WHERE playerID=${playerID}`,
-  );
-  return !!rsp;
+  await query(`DELETE FROM ${RELATION_NAME} WHERE playerID=${playerID}`);
+  return true;
 }
