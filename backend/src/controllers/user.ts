@@ -1,13 +1,13 @@
 import { query } from '../services/db';
 import format from 'pg-format';
-import logger from '../utils/logger'
+import logger from '../utils/logger';
 
 const RELATION_NAME = 'player';
 
 export async function createUser(
   name: string,
   email: string,
-  password: string
+  password: string,
 ): Promise<any | null> {
   const sql = format(
     'INSERT INTO %I (username, email, password, elo, totalXP) VALUES (%L, %L, %L, %L, %L) RETURNING playerID;',
@@ -16,7 +16,7 @@ export async function createUser(
     email,
     password,
     0,
-    0
+    0,
   );
 
   try {
@@ -34,19 +34,31 @@ export async function createUser(
 }
 
 export async function getUserByID(playerID: number): Promise<any> {
-  const sql = format('SELECT * FROM %I WHERE playerID = %L;', RELATION_NAME, playerID);
+  const sql = format(
+    'SELECT * FROM %I WHERE playerID = %L;',
+    RELATION_NAME,
+    playerID,
+  );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
 export async function getUserByName(username: string): Promise<any> {
-  const sql = format('SELECT * FROM %I WHERE username = %L;', RELATION_NAME, username);
+  const sql = format(
+    'SELECT * FROM %I WHERE username = %L;',
+    RELATION_NAME,
+    username,
+  );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
 export async function getUserByEmail(email: string): Promise<any> {
-  const sql = format('SELECT * FROM %I WHERE email = %L;', RELATION_NAME, email);
+  const sql = format(
+    'SELECT * FROM %I WHERE email = %L;',
+    RELATION_NAME,
+    email,
+  );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
@@ -55,14 +67,21 @@ export async function updateUserByID(
   playerID: number,
   values: Record<string, string | number>,
 ): Promise<boolean> {
-  const setClause = Object.entries(values).map(([key, value]) => {
-    if (typeof value === 'number') {
-      value = Math.floor(value);
-    }
-    return format('%I = %L', key, value);
-  }).join(', ');
+  const setClause = Object.entries(values)
+    .map(([key, value]) => {
+      if (typeof value === 'number') {
+        value = Math.floor(value);
+      }
+      return format('%I = %L', key, value);
+    })
+    .join(', ');
 
-  const sql = format('UPDATE %I SET %s WHERE playerID = %L;', RELATION_NAME, setClause, playerID);
+  const sql = format(
+    'UPDATE %I SET %s WHERE playerID = %L;',
+    RELATION_NAME,
+    setClause,
+    playerID,
+  );
 
   try {
     await query(sql);
@@ -74,7 +93,11 @@ export async function updateUserByID(
 }
 
 export async function deleteUserByID(playerID: number): Promise<boolean> {
-  const sql = format('DELETE FROM %I WHERE playerID = %L;', RELATION_NAME, playerID);
+  const sql = format(
+    'DELETE FROM %I WHERE playerID = %L;',
+    RELATION_NAME,
+    playerID,
+  );
 
   try {
     await query(sql);

@@ -262,51 +262,51 @@ INSERT INTO ItemCategory (title, category) VALUES
 ('Rare Pet', 'Equipment');
 
 -- Insert inventories
-INSERT INTO Inventory (invID, playerID) VALUES
-(1, 0),  -- 1: main inv for all players
-(1, 1),
-(1, 2),
-(1, 3),
-(1, 4),
-(1, 5),
-(1, 6),
-(1, 7),
-(1, 8),
-(1, 9),
-(1, 10),
-(2, 0),
-(2, 1),  -- 2: gift box for all players
-(2, 2),
-(2, 3),
-(2, 4),
-(2, 5),
-(2, 6),
-(2, 7),
-(2, 8),
-(2, 9),
-(2, 10);
+INSERT INTO Inventory (invName, playerID) VALUES
+('Main',0),   -- 1
+('Main',1),
+('Main',2),
+('Main',3),
+('Main',4),
+('Main',5),
+('Main',6),
+('Main',7),
+('Main',8),
+('Main',9),
+('Main',10),
+('Gift Box',0), -- 12
+('Gift Box',1), -- 13
+('Gift Box',2), -- 14
+('Gift Box',3), -- 15
+('Gift Box',4),
+('Gift Box',5),
+('Gift Box',6),
+('Gift Box',7),
+('Gift Box',8),
+('Gift Box',9),
+('Gift Box',10);
 
 -- Insert sample transactions and populate inventories
 -- Note: We're assuming that the itemIDs are assigned in the order of insertion into ShopItemSold
-INSERT INTO InventoryItem (invID, playerID, itemID, quantity) VALUES
+INSERT INTO InventoryItem (invID, itemID, quantity) VALUES
 -- Player 1 (Ali)
-(1, 1, 1, 5),  -- 5 Health Potions
-(1, 1, 4, 2),  -- 2 Potions of Experience Gain
-(1, 1, 3, 1),  -- 1 Bow
+(2, 1, 5),  -- 5 Health Potions
+(2, 4, 2),  -- 2 Potions of Experience Gain
+(2, 3, 1),  -- 1 Bow
 -- Player 2 (Sharjeel)
-(1, 2, 2, 3),  -- 3 Strength Potions
-(1, 2, 5, 1),  -- 1 Iron Sword
-(1, 2, 3, 1),  -- 1 Bow
+(3, 2, 3),  -- 3 Strength Potions
+(3, 5, 1),  -- 1 Iron Sword
+(3, 3, 1),  -- 1 Bow
 -- Player 3 (Zaid)
-(1, 3, 4, 10), -- 10 Potions of Experience Gain
-(1, 3, 6, 1),  -- 1 Leather Armor
+(4, 4, 10), -- 10 Potions of Experience Gain
+(4, 6, 1),  -- 1 Leather Armor
 -- Player 4 (Steve)
-(1, 4, 4, 1),  -- 1 Magic Wand,
-(1, 4, 10, 1), -- 1 Golden Armor
+(5, 4, 1),  -- 1 Magic Wand,
+(5, 10, 1), -- 1 Golden Armor
 -- Player 5 (Wozniak)
-(1, 5, 4, 1),  -- 1 Magic Wand (Researcher)
-(1, 5, 10, 2), -- 2 Ancient Scrolls
-(1, 5, 5, 5);  -- 5 Potions of Experience Gain (Loyalty)
+(6, 4, 1),  -- 1 Magic Wand (Researcher)
+(6, 10, 2), -- 2 Ancient Scrolls
+(6, 5, 5);  -- 5 Potions of Experience Gain (Loyalty)
 
 -- Insert currency balances (removed balanceID as it's SERIAL)
 INSERT INTO CurrBalance (playerID, currName, amount) VALUES
@@ -390,20 +390,20 @@ INSERT INTO SaleAmount (itemID, shopID, cost, quantity) VALUES
 -- Insert transactions
 INSERT INTO Transaction (playerID, invID, shopID, itemID, balanceID, cost) VALUES
 -- Player 1
-(1, 1, 1, 1, 1, 50),  -- 5 Health Potions
-(1, 1, 1, 5, 2, 30),  -- 2 Potions of Experience Gain
-(1, 1, 1, 3, 3, 500), -- 1 Bow
+(2, 1, 1, 1, 1, 50),  -- 5 Health Potions
+(2, 1, 1, 5, 2, 30),  -- 2 Potions of Experience Gain
+(2, 1, 1, 3, 3, 500), -- 1 Bow
 -- Player 2
-(2, 1, 1, 2, 4, 15),  -- 3 Strength Potions
-(2, 1, 1, 6, 5, 150), -- 1 Iron Sword
-(2, 1, 1, 3, 6, 500), -- 1 Bow
+(3, 1, 1, 2, 4, 15),  -- 3 Strength Potions
+(3, 1, 1, 6, 5, 150), -- 1 Iron Sword
+(3, 1, 1, 3, 6, 500), -- 1 Bow
 -- Player 3
-(3, 1, 1, 5, 7, 30),  -- 1 Potions of Experience Gain
-(3, 1, 1, 7, 8, 100), -- 1 Leather Armor
+(4, 1, 1, 5, 7, 30),  -- 1 Potions of Experience Gain
+(4, 1, 1, 7, 8, 100), -- 1 Leather Armor
 -- Player 4
-(4, 1, 1, 4, 9, 30),  -- 1 Magic Wand
-(4, 1, 1, 8, 10, 200),-- 1 Golden Armor
+(5, 1, 1, 4, 9, 30),  -- 1 Magic Wand
+(5, 1, 1, 8, 10, 200),-- 1 Golden Armor
 -- Player 5
-(5, 1, 1, 10, 11, 200),-- 2 Ancient Scrolls
-(5, 1, 1, 5, 12, 30);  -- 2 Potions of Experience Gain
+(6, 1, 1, 10, 11, 200),-- 2 Ancient Scrolls
+(6, 1, 1, 5, 12, 30);  -- 2 Potions of Experience Gain
 

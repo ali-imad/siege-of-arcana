@@ -141,9 +141,9 @@ CREATE TABLE ItemCategory (
 
 -- Create the Inventory table
 CREATE TABLE Inventory (
-    invID INTEGER,
+    invID SERIAL PRIMARY KEY,
     playerID INTEGER NOT NULL,
-    PRIMARY KEY (invID, playerID),
+    invName VARCHAR(50) NOT NULL,
     FOREIGN KEY (playerID) REFERENCES Player(playerID)
 );
 
@@ -152,9 +152,8 @@ CREATE TABLE InventoryItem (
     invItemID SERIAL PRIMARY KEY,
     invID INTEGER NOT NULL,
     itemID INTEGER NOT NULL,
-    playerID INTEGER NOT NULL,
     quantity INTEGER,
-    FOREIGN KEY (invID, playerID) REFERENCES Inventory(invID, playerID),
+    FOREIGN KEY (invID) REFERENCES Inventory(invID),
     FOREIGN KEY (itemID) REFERENCES Item(itemID)
 );
 
@@ -188,7 +187,7 @@ CREATE TABLE Transaction (
     balanceID INTEGER NOT NULL,
     cost INTEGER,
     FOREIGN KEY (playerID) REFERENCES Player(playerID),
-    FOREIGN KEY (playerID, invID) REFERENCES Inventory(playerID, invID),
+    FOREIGN KEY (invID) REFERENCES Inventory(invID),
     FOREIGN KEY (itemID) REFERENCES Item(itemID),
     FOREIGN KEY (itemID, shopID) REFERENCES ShopItemSold(itemID, shopID),
     FOREIGN KEY (balanceID) REFERENCES CurrBalance(balanceID),
