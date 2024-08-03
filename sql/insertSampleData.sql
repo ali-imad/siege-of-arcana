@@ -1,4 +1,4 @@
--- Insert administrator player profile
+-- Insert administrator player profile (pid = 0)
 INSERT INTO Player (playerID, username, email, password, elo, totalXP) VALUES
 (0, 'admin', 'admin@gamecompany.com', 'superSecurePassword123', 9999, 999999);
 
@@ -147,107 +147,263 @@ INSERT INTO Performance (kills, deaths, assists, efficacy) VALUES
 (12, 1, 7, 0.9),
 (9, 5, 6, 0.75);
 
--- Insert shops
-INSERT INTO Shop (shopID, title) VALUES
-(1, 'Main Shop'),
-(2, 'Event Shop');
+-- Insert shops (removed shopID as it's SERIAL)
+INSERT INTO Shop (title) VALUES
+('General Shop'),
+('Premium Shop'),
+('Researcher Shop'),
+('Enchanter Shop'),
+('Loyalty Shop');
 
--- Insert currencies
+-- Insert currencies (unchanged)
 INSERT INTO Currency (currName, type) VALUES
 ('Gold', TRUE),
 ('Silver', TRUE),
+('Platinum', TRUE),
 ('Essence', FALSE),
-('Artifacts', FALSE),
-('Relics', FALSE),
-('Platinum', TRUE);  -- Added 'Platinum'
+('Artifacts', FALSE);
 
--- Insert shop items sold
-INSERT INTO ShopItemSold (itemID, shopID, title, cost, currName) VALUES
-(1001, 1, 'Cape', 100, 'Gold'),
-(1002, 1, 'Shield', 200, 'Silver'),
-(1003, 1, 'Potion of Experience Gain', 100, 'Gold'),
-(1004, 1, 'Arrow', 150, 'Silver'),
-(1005, 1, 'Bow', 200, 'Essence'),
-(1006, 2, 'Festive Dress', 100, 'Essence'),
-(1007, 2, 'Potion of Strength', 20, 'Gold'),
-(1008, 2, 'Potion of Strength', 200, 'Essence'),
-(1009, 2, 'Bow tie', 200, 'Essence'),
-(1010, 2, 'Hat', 200, 'Essence');
+-- Insert items
+INSERT INTO Item (itemID, title) VALUES
+(1, 'Health Potion'),
+(2, 'Strength Potion'),
+(3, 'Bow'),
+(4, 'Magic Wand'),
+(5, 'Potion of Experience Gain'),
+(6, 'Iron Sword'),
+(7, 'Leather Armor'),
+(8, 'Golden Armor'),
+(9, 'Enchanted Sword'),
+(10, 'Ancient Scroll'),
+(11, 'Mysterious Relic'),
+(12, 'Enchanted Gem'),
+(13, 'Magical Dust'),
+(14, 'Exclusive Mount'),
+(15, 'Rare Pet');
 
--- Insert cosmetic items
-INSERT INTO Cosmetic (itemID, rarity) VALUES
-(1001, 'Rare'),
-(1002, 'Common'),
-(1006, 'Common'),
-(1009, 'Mythic'),
-(1010, 'Legendary');
+
+-- Insert shop items
+INSERT INTO ShopItemSold (itemID, shopID, cost, currName) VALUES
+-- General Shop
+(1, 1, 10, 'Silver'), -- Health Potion
+(2, 1, 15, 'Silver'), -- Strength Potion
+(3, 1, 500, 'Silver'),-- Bow
+(4, 1, 20, 'Silver'), -- Magic Wand
+(5, 1, 30, 'Silver'), -- Potion of Experience Gain
+(6, 1, 100, 'Silver'),-- Iron Sword
+(7, 1, 50, 'Silver'), -- Leather Armor
+(8, 1, 200, 'Silver'),-- Golden Armor
+(9, 1, 35, 'Silver'), -- Enchanted Sword
+(10, 1, 200, 'Silver'),-- Ancient Scroll
+(11, 1, 15, 'Silver'),-- Mysterious Relic
+(12, 1, 50, 'Silver'),-- Enchanted Gem
+(13, 1, 10, 'Silver'),-- Magical Dust
+(14, 1, 200, 'Silver'),-- Exclusive Mount
+(15, 1, 150, 'Silver'),-- Rare Pet
+-- Premium Shop
+(1, 2, 50, 'Gold'), -- Health Potion
+(2, 2, 75, 'Gold'), -- Strength Potion
+(3, 2, 15, 'Gold'), -- Bow
+(4, 2, 200, 'Gold'),-- Magic Wand
+(5, 2, 150, 'Gold'),-- Potion of Experience Gain
+-- Researcher Shop
+(10, 3, 20, 'Artifacts'), -- Ancient Scroll
+(11, 3, 5, 'Artifacts'),  -- Mysterious Relic
+(12, 3, 30, 'Artifacts'), -- Enchanted Gem
+(13, 3, 50, 'Artifacts'), -- Magical Dust
+-- Enchanter Shop
+(9, 4, 35, 'Essence'), -- Enchanted Sword
+(10, 4, 10, 'Essence'),-- Ancient Scroll
+(11, 4, 40, 'Essence'),-- Mysterious Relic
+(12, 4, 15, 'Essence'),-- Enchanted Gem
+-- Loyalty Shop
+(5, 5, 10, 'Platinum'),  -- Potion of Experience Gain
+(9, 5, 20, 'Platinum'),  -- Enchanted Sword
+(13, 5, 5, 'Platinum'),  -- Magical Dust
+(14, 5, 100, 'Platinum'),-- Exclusive Mount
+(15, 5, 50, 'Platinum');  -- Rare Pet
 
 -- Insert consumable items
 INSERT INTO Consumable (itemID, expiration, effect) VALUES
-(1003, 30, 'Gain 100 xp'),
-(1004, 15, 'Does 20 damage'),
-(1005, 20, 'Fire arrow, 20 uses'),
-(1007, 20, 'Increases damage'),
-(1008, 20, 'Increases damage');
+(1, null, 'Heals 50 HP'),
+(2, null, 'Increases strength by 10% for 30 seconds'),
+(5, 30, 'Grants 100 XP'),
+(13, null, 'Grants 10 Essence');
 
--- Insert item categories
+INSERT INTO Cosmetic (itemID, rarity) VALUES
+(3, 'Common'),
+(4, 'Uncommon'),
+(6, 'Common'),
+(7, 'Common'),
+(8, 'Rare'),
+(9, 'Rare'),
+(10, 'Epic'),
+(11, 'Epic'),
+(12, 'Epic'),
+(14, 'Epic'),
+(15, 'Legendary');
+
+-- Insert item categories (unchanged)
 INSERT INTO ItemCategory (title, category) VALUES
-('Cape', 'Cosmetic'),
-('Shield', 'Cosmetic'),
+('Health Potion', 'Consumable'),
+('Strength Potion', 'Consumable'),
+('Bow', 'Equipment'),
+('Magic Wand', 'Equipment'),
 ('Potion of Experience Gain', 'Consumable'),
-('Potion of Strength', 'Consumable'),
-('Arrow', 'Consumable'),
-('Bow', 'Consumable'),
-('Festive Dress', 'Cosmetic'),
-('Bow tie', 'Cosmetic'),
-('Hat', 'Cosmetic');
+('Iron Sword', 'Equipment'),
+('Leather Armor', 'Equipment'),
+('Golden Armor', 'Equipment'),
+('Enchanted Sword', 'Equipment'),
+('Ancient Scroll', 'Equipment'),
+('Mysterious Relic', 'Equipment'),
+('Enchanted Gem', 'Equipment'),
+('Magical Dust', 'Consumable'),
+('Exclusive Mount', 'Equipment'),
+('Rare Pet', 'Equipment');
 
 -- Insert inventories
 INSERT INTO Inventory (invID, playerID) VALUES
+(1, 0),  -- 1: main inv for all players
 (1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9),
+(1, 10),
+(2, 0),
+(2, 1),  -- 2: gift box for all players
 (2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(0, 0);
+(2, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(2, 7),
+(2, 8),
+(2, 9),
+(2, 10);
 
--- Insert inventory items
-INSERT INTO InventoryItem (invItemID, invID, itemID, quantity) VALUES
-(1, 1, 1001, 2),
-(2, 2, 1002, 3),
-(3, 3, 1003, 5),
-(4, 4, 1004, 1),
-(5, 5, 1005, 4),
-(0, 0, 1010, 1);
+-- Insert sample transactions and populate inventories
+-- Note: We're assuming that the itemIDs are assigned in the order of insertion into ShopItemSold
+INSERT INTO InventoryItem (invID, playerID, itemID, quantity) VALUES
+-- Player 1 (Ali)
+(1, 1, 1, 5),  -- 5 Health Potions
+(1, 1, 4, 2),  -- 2 Potions of Experience Gain
+(1, 1, 3, 1),  -- 1 Bow
+-- Player 2 (Sharjeel)
+(1, 2, 2, 3),  -- 3 Strength Potions
+(1, 2, 5, 1),  -- 1 Iron Sword
+(1, 2, 3, 1),  -- 1 Bow
+-- Player 3 (Zaid)
+(1, 3, 4, 10), -- 10 Potions of Experience Gain
+(1, 3, 6, 1),  -- 1 Leather Armor
+-- Player 4 (Steve)
+(1, 4, 4, 1),  -- 1 Magic Wand,
+(1, 4, 10, 1), -- 1 Golden Armor
+-- Player 5 (Wozniak)
+(1, 5, 4, 1),  -- 1 Magic Wand (Researcher)
+(1, 5, 10, 2), -- 2 Ancient Scrolls
+(1, 5, 5, 5);  -- 5 Potions of Experience Gain (Loyalty)
 
--- Insert currency balances (must be after Currency insertion)
-INSERT INTO CurrBalance (balanceID, playerID, currName, amount) VALUES
-(201, 1, 'Gold', 1000),
-(202, 2, 'Silver', 500),
-(203, 1, 'Essence', 2000),
-(204, 4, 'Gold', 1500),
-(205, 5, 'Platinum', 3000),  -- Ensure 'Platinum' exists
-(206, 2, 'Gold', 2000),
-(200, 0, 'Gold', 1000000),
-(207, 0, 'Silver', 1000000),
-(208, 0, 'Platinum', 1000000),
-(209, 0, 'Essence', 1000000),
-(210, 0, 'Artifacts', 1000000),
-(211, 0, 'Relics', 1000000);
+-- Insert currency balances (removed balanceID as it's SERIAL)
+INSERT INTO CurrBalance (playerID, currName, amount) VALUES
+-- Player 1 (Ali)
+(1, 'Gold', 100),
+(1, 'Silver', 4300),  -- (5000 - 50 - 150 - 500)
+(1, 'Essence', 0),
+(1, 'Artifacts', 0),
+(1, 'Platinum', 4),
+-- Player 2
+(2, 'Gold', 100),
+(2, 'Silver', 4650),  -- (5000 - 150 - 100 - 200)
+(2, 'Essence', 0),
+(2, 'Artifacts', 0),
+(2, 'Platinum', 30),
+-- Player 3
+(3, 'Gold', 300),
+(3, 'Silver', 3350),  -- (5000 - 1500 - 100)
+(3, 'Essence', 0),
+(3, 'Artifacts', 0),
+(3, 'Platinum', 20),
+-- Player 4
+(4, 'Gold', 1130),  -- (Steve buys gold)
+(4, 'Silver', 4600),
+(4, 'Essence', 0),
+(4, 'Artifacts', 0),
+(4, 'Platinum', 20),
+-- Player 5
+(5, 'Gold', 1550),  -- (Wozniak buys gold)
+(5, 'Silver', 4550),  -- (5000 - 30 - 400 - 50)
+(5, 'Essence', 0),
+(5, 'Artifacts', 3),  -- Left over
+(5, 'Platinum', 10),
 
--- Insert transactions (must be after CurrBalance insertion)
-INSERT INTO Transaction (txID, playerID, itemID, balanceID, cost) VALUES
-(1, 1, 1001, 201, 50),
-(2, 2, 1002, 202, 75),
-(3, 3, 1003, 203, 100),
-(4, 4, 1004, 204, 150),
-(5, 5, 1005, 205, 200);
+-- Players 6-10 (unchanged)
+(6, 'Gold', 80),
+(6, 'Silver', 1500),
+(6, 'Essence', 40),
+(6, 'Artifacts', 25),
+(6, 'Platinum', 7),
+(7, 'Gold', 120),
+(7, 'Silver', 2200),
+(7, 'Essence', 65),
+(7, 'Artifacts', 18),
+(7, 'Platinum', 9),
+(8, 'Gold', 180),
+(8, 'Silver', 2800),
+(8, 'Essence', 90),
+(8, 'Artifacts', 35),
+(8, 'Platinum', 11),
+(9, 'Gold', 160),
+(9, 'Silver', 2500),
+(9, 'Essence', 80),
+(9, 'Artifacts', 28),
+(9, 'Platinum', 10),
+(10, 'Gold', 140),
+(10, 'Silver', 2300),
+(10, 'Essence', 70),
+(10, 'Artifacts', 22),
+(10, 'Platinum', 8);
 
--- Insert sale amounts
-INSERT INTO SaleAmount (itemID, cost, quantity) VALUES
-(1001, 50, 10),
-(1002, 75, 20),
-(1003, 100, 15),
-(1004, 150, 8),
-(1005, 200, 5);
+-- Insert sample data for SaleAmount based on the transactions
+INSERT INTO SaleAmount (itemID, shopID, cost, quantity) VALUES
+-- Player 1
+(1, 1, 50, 5),  -- 5 Health Potions
+(5, 1, 30, 2),  -- 2 Potions of Experience Gain
+(3, 1, 500, 1), -- 1 Bow
+-- Player 2
+(2, 1, 15, 3),  -- 3 Strength Potions
+(6, 1, 150, 1), -- 1 Iron Sword
+-- duplicate
+-- Player 3
+(7, 1, 100, 1), -- 1 Leather Armor
+-- Player 4
+(4, 1, 30, 1),  -- 1 Magic Wand
+(8, 1, 200, 1),-- 1 Golden Armor
+-- Player 5
+(10, 1, 200, 2);-- 2 Ancient Scrolls
+
+
+-- Insert transactions
+INSERT INTO Transaction (playerID, invID, shopID, itemID, balanceID, cost) VALUES
+-- Player 1
+(1, 1, 1, 1, 1, 50),  -- 5 Health Potions
+(1, 1, 1, 5, 2, 30),  -- 2 Potions of Experience Gain
+(1, 1, 1, 3, 3, 500), -- 1 Bow
+-- Player 2
+(2, 1, 1, 2, 4, 15),  -- 3 Strength Potions
+(2, 1, 1, 6, 5, 150), -- 1 Iron Sword
+(2, 1, 1, 3, 6, 500), -- 1 Bow
+-- Player 3
+(3, 1, 1, 5, 7, 30),  -- 1 Potions of Experience Gain
+(3, 1, 1, 7, 8, 100), -- 1 Leather Armor
+-- Player 4
+(4, 1, 1, 4, 9, 30),  -- 1 Magic Wand
+(4, 1, 1, 8, 10, 200),-- 1 Golden Armor
+-- Player 5
+(5, 1, 1, 10, 11, 200),-- 2 Ancient Scrolls
+(5, 1, 1, 5, 12, 30);  -- 2 Potions of Experience Gain
 

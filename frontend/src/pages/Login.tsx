@@ -1,6 +1,8 @@
 import {useState} from "react";
 import axios from 'axios';
 
+const BE_URL = import.meta.env.VITE_BE_ROUTE;
+
 const AuthScreen = ({ onLogin, onRegister }) => (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-80">
@@ -25,7 +27,8 @@ const AuthScreen = ({ onLogin, onRegister }) => (
 
 
     const getUser = async (u: string) => {
-        const url = `http://localhost:5001/api/user/name/${u}`;
+        const url = `${BE_URL}/api/user/name/${u}`;
+      console.log(url)
         try {
         const response = await axios.get(url);
         return response.data;
@@ -35,7 +38,8 @@ const AuthScreen = ({ onLogin, onRegister }) => (
     };
 
     const getEmail = async (e: string) => {
-      const url = `http://localhost:5001/api/user/email/${e}`;
+      const url = `${BE_URL}/api/user/email/${e}`;
+      console.log(url)
       try {
       const response = await axios.get(url);
       return response.data;

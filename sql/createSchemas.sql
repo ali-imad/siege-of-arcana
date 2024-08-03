@@ -101,14 +101,20 @@ CREATE TABLE Currency (
     type BOOLEAN
 );
 
+CREATE TABLE Item (
+    itemID SERIAL PRIMARY KEY,
+    title VARCHAR(50) NOT NULL
+);
+
 -- Create the ShopItemSold table
 CREATE TABLE ShopItemSold (
-    itemID SERIAL PRIMARY KEY,
+    itemID INTEGER NOT NULL,
     shopID INTEGER NOT NULL,
-    title VARCHAR(50) NOT NULL,
     cost INTEGER,
     currName VARCHAR(50),
+    PRIMARY KEY (itemID, shopID),
     FOREIGN KEY (shopID) REFERENCES Shop(shopID),
+    FOREIGN KEY (itemID) REFERENCES Item(itemID),
     FOREIGN KEY (currName) REFERENCES Currency(currName)
 );
 
@@ -116,7 +122,7 @@ CREATE TABLE ShopItemSold (
 CREATE TABLE Cosmetic (
     itemID INTEGER PRIMARY KEY,
     rarity VARCHAR(50) NOT NULL,
-    FOREIGN KEY (itemID) REFERENCES ShopItemSold(itemID)
+    FOREIGN KEY (itemID) REFERENCES Item(itemID)
 );
 
 -- Create the Consumable table
@@ -124,7 +130,7 @@ CREATE TABLE Consumable (
     itemID INTEGER PRIMARY KEY,
     expiration INTEGER,
     effect VARCHAR(50),
-    FOREIGN KEY (itemID) REFERENCES ShopItemSold(itemID)
+    FOREIGN KEY (itemID) REFERENCES Item(itemID)
 );
 
 -- Create the ItemCategory table
@@ -135,8 +141,9 @@ CREATE TABLE ItemCategory (
 
 -- Create the Inventory table
 CREATE TABLE Inventory (
-    invID SERIAL PRIMARY KEY,
+    invID INTEGER,
     playerID INTEGER NOT NULL,
+    PRIMARY KEY (invID, playerID),
     FOREIGN KEY (playerID) REFERENCES Player(playerID)
 );
 
@@ -145,9 +152,10 @@ CREATE TABLE InventoryItem (
     invItemID SERIAL PRIMARY KEY,
     invID INTEGER NOT NULL,
     itemID INTEGER NOT NULL,
+    playerID INTEGER NOT NULL,
     quantity INTEGER,
-    FOREIGN KEY (invID) REFERENCES Inventory(invID),
-    FOREIGN KEY (itemID) REFERENCES ShopItemSold(itemID)
+    FOREIGN KEY (invID, playerID) REFERENCES Inventory(invID, playerID),
+    FOREIGN KEY (itemID) REFERENCES Item(itemID)
 );
 
 -- Create the CurrBalance table
@@ -160,22 +168,30 @@ CREATE TABLE CurrBalance (
     FOREIGN KEY (currName) REFERENCES Currency(currName)
 );
 
+-- Create the SaleAmount table
+CREATE TABLE SaleAmount (
+    itemID INTEGER NOT NULL,
+    shopID INTEGER NOT NULL,
+    cost INTEGER NOT NULL,
+    quantity INTEGER,
+    PRIMARY KEY (itemID, shopID, cost),
+    FOREIGN KEY (itemID, shopID) REFERENCES ShopItemSold(itemID, shopID)
+);
+
 -- Create the Transaction table
 CREATE TABLE Transaction (
     txID SERIAL PRIMARY KEY,
     playerID INTEGER NOT NULL,
     itemID INTEGER NOT NULL,
+    shopID INTEGER NOT NULL,
+    invID INTEGER NOT NULL,
     balanceID INTEGER NOT NULL,
     cost INTEGER,
     FOREIGN KEY (playerID) REFERENCES Player(playerID),
-    FOREIGN KEY (itemID) REFERENCES ShopItemSold(itemID),
-    FOREIGN KEY (balanceID) REFERENCES CurrBalance(balanceID)
+    FOREIGN KEY (playerID, invID) REFERENCES Inventory(playerID, invID),
+    FOREIGN KEY (itemID) REFERENCES Item(itemID),
+    FOREIGN KEY (itemID, shopID) REFERENCES ShopItemSold(itemID, shopID),
+    FOREIGN KEY (balanceID) REFERENCES CurrBalance(balanceID),
+    FOREIGN KEY (itemID, cost, shopID) REFERENCES SaleAmount(itemID, cost, shopID) ON DELETE CASCADE
 );
 
--- Create the SaleAmount table
-CREATE TABLE SaleAmount (
-    itemID INTEGER NOT NULL,
-    cost INTEGER,
-    quantity INTEGER,
-    FOREIGN KEY (itemID) REFERENCES ShopItemSold(itemID)
-);
