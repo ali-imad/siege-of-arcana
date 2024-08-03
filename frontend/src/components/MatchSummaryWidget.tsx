@@ -11,19 +11,19 @@ interface Match {
   kda: string;
 }
 
-interface MatchSummaryWidgetProps {
+interface MatchSummaryWidgetCols {
   matches: Match[];
 }
 
-const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ matches }) => {
+const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ matches }) => {
   const navigate = useNavigate();
-  const [hiddenProps, setHiddenProps] = useState<string[]>([]);
+  const [hiddenCols, setHiddenCols] = useState<string[]>([]);
 
-  const handleCheckboxChange = (prop: string) => {
-    setHiddenProps((prevHiddenProps) =>
-      prevHiddenProps.includes(prop)
-        ? prevHiddenProps.filter((p) => p !== prop)
-        : [...prevHiddenProps, prop]
+  const handleCheckboxChange = (cols: string) => {
+    setHiddenCols((prevHiddenCols) =>
+      prevHiddenCols.includes(cols)
+        ? prevHiddenCols.filter((p) => p !== cols)
+        : [...prevHiddenCols, cols]
     );
   };
 
@@ -35,7 +35,7 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ matches }) => {
           <input
             type="checkbox"
             id="datePlayed"
-            checked={!hiddenProps.includes("datePlayed")}
+            checked={!hiddenCols.includes("datePlayed")}
             onChange={() => handleCheckboxChange("datePlayed")}
           />
           <label htmlFor="datePlayed" className="ml-2">Date Played</label>
@@ -44,7 +44,7 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ matches }) => {
           <input
             type="checkbox"
             id="mode"
-            checked={!hiddenProps.includes("mode")}
+            checked={!hiddenCols.includes("mode")}
             onChange={() => handleCheckboxChange("mode")}
           />
           <label htmlFor="mode" className="ml-2">Mode</label>
@@ -53,7 +53,7 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ matches }) => {
           <input
             type="checkbox"
             id="map"
-            checked={!hiddenProps.includes("map")}
+            checked={!hiddenCols.includes("map")}
             onChange={() => handleCheckboxChange("map")}
           />
           <label htmlFor="map" className="ml-2">Map</label>
@@ -62,7 +62,7 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ matches }) => {
           <input
             type="checkbox"
             id="xpGain"
-            checked={!hiddenProps.includes("xpGain")}
+            checked={!hiddenCols.includes("xpGain")}
             onChange={() => handleCheckboxChange("xpGain")}
           />
           <label htmlFor="xpGain" className="ml-2">XP Gain</label>
@@ -79,15 +79,15 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ matches }) => {
               <div className={match.result === "Win" ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
                 {match.result}
               </div>
-              {!hiddenProps.includes("map") && <div>Map: {match.map}</div>}
-              {!hiddenProps.includes("mode") && <div>Mode: {match.mode}</div>}
+              {!hiddenCols.includes("map") && <div>Map: {match.map}</div>}
+              {!hiddenCols.includes("mode") && <div>Mode: {match.mode}</div>}
             </div>
             <div className="flex-1 text-center">
               K/D/A: {match.kda}
             </div>
             <div className="flex-1 text-right">
-              {!hiddenProps.includes("datePlayed") && <div>Date Played: {match.datePlayed}</div>}
-              {!hiddenProps.includes("xpGain") && <div>XP Gain: {match.xpGain}</div>}
+              {!hiddenCols.includes("datePlayed") && <div>Date Played: {match.datePlayed}</div>}
+              {!hiddenCols.includes("xpGain") && <div>XP Gain: {match.xpGain}</div>}
             </div>
           </div>
         ))}
