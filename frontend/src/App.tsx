@@ -6,6 +6,7 @@ import Home from './pages/Home.tsx';
 import Shop from './pages/Shop.tsx';
 import Inventory from './pages/Inventory.tsx';
 import Profile from './pages/Profile.tsx';
+import Match from './pages/Match.tsx';
 import Login from './pages/Login.tsx';
 
 function App() {
@@ -16,11 +17,11 @@ function App() {
       <NavBar isLoggedIn={isLoggedIn} />
       <div>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/shop' element={<Shop />} />
-          <Route path='/inventory' element={<Inventory />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/login' element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path='/match/:matchID' element={<Match />} />
         </Routes>
       </div>
     </Router>
