@@ -1,17 +1,17 @@
 import './App.css';
-import NavBar from "./components/NavBar.tsx";
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home.tsx";
-import Shop from "./pages/Shop.tsx";
-import Inventory from "./pages/Inventory.tsx";
-import Profile from "./pages/Profile.tsx";
+import NavBar from './components/NavBar.tsx';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home.tsx';
+import Shop from './pages/Shop.tsx';
+import Inventory from './pages/Inventory.tsx';
+import Profile from './pages/Profile.tsx';
 import Match from './pages/Match.tsx';
 import Login from './pages/Login.tsx';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   return (
     <Router>
       <NavBar isLoggedIn={isLoggedIn} />
@@ -30,4 +30,3 @@ function App() {
 }
 
 export default App;
-
