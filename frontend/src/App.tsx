@@ -22,7 +22,6 @@ function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/profile" element={<Profile />} />
           <Route path='/match/:matchID' element={<Match />} />
-          <Route path='/login' element={<Login />} />
         </Routes>
       </div>
     </Router>

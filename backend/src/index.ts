@@ -1,17 +1,18 @@
 import app from './app';
 import logger from './utils/logger';
 import './utils/loadEnv';
-import { getClient, disconnect } from './services/db';
+import { disconnect, initPool } from './services/db';
 
 const port = process.env['PORT'] || 5151;
 
-const startServer = async () => {
+const startServer = () => {
   try {
     logger.info('Connecting to database...');
-    await getClient(); // Initialize the database client
     app.listen(port, () => {
       logger.info(`Listening: http://localhost:${port}`);
     });
+    // open the database connection once the server is running
+    initPool();
   } catch (err) {
     logger.error('Failed to connect to database:', err);
     process.exit(1);

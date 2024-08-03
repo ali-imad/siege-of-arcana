@@ -2,36 +2,50 @@ import '../utils/loadEnv';
 import { Pool, PoolClient, QueryResult } from 'pg';
 import logger from '../utils/logger';
 
-let client: PoolClient | null = null;
-const pool = new Pool({
-  user: process.env['DB_USER'],
-  host: process.env['DB_HOST'],
-  database: process.env['DB_NAME'],
-  password: process.env['DB_PASSWORD'],
-  port: parseInt(process.env['DB_PORT'] || '5432'),
-});
+let pool: Pool | null = null;
 
-export const query = async (text: string): Promise<QueryResult> => {
-  if (!client) {
-    throw new Error('No client');
-  }
+export async function initPool(): Promise<void> {
+  if (pool !== null) return;
 
-  const resp = await client.query(text);
-  logger.debug(`Query: ${text}`);
-  if (!resp) {
-    logger.error(`Query failed: ${text}`);
+  pool = new Pool({
+    user: process.env['DB_USER'],
+    host: process.env['DB_HOST'],
+    database: process.env['DB_NAME'],
+    password: process.env['DB_PASSWORD'],
+    port: parseInt(process.env['DB_PORT'] || '5432'),
+  });
+}
+
+// Name:    Query
+// Purpose: Call a SQL query and return the resul
+// Args:    q       - query string (parameterized using pg-format)
+// Returns: resp    - result of query on db
+export async function query(q: string): Promise<QueryResult> {
+  if (!pool) await initPool();
+  if (!pool) throw new Error('Could not initialize pool');
+
+  let client: PoolClient | null = await pool.connect();
+  if (!client) throw new Error('Could not connect to pool');
+
+  try {
+    logger.debug(`Query: ${q}`);
+    const resp = await client.query(q);
+    if (!resp) {
+      logger.error(`Query failed: ${q}`);
+    } else {
+      logger.debug(`Query successful with ${resp.rowCount} rows`);
+    }
+    return resp;
+  } finally {
     client.release();
-    throw new Error('Query failed');
-  } else {
-    logger.debug(`Query successful with ${resp.rowCount} rows`);
   }
-  return resp;
-};
+}
 
-export const getClient = async () => {
-  client = await pool.connect();
-};
+export function queryIsEmpty(res: QueryResult): boolean {
+  return res.rowCount === 0;
+}
 
-export const disconnect = async (): Promise<void> => {
+export async function disconnect(): Promise<void> {
+  if (!pool) return;
   await pool.end();
-};
+}

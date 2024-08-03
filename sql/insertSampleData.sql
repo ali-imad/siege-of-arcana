@@ -3,17 +3,17 @@ INSERT INTO Player (playerID, username, email, password, elo, totalXP) VALUES
 (0, 'admin', 'admin@gamecompany.com', 'superSecurePassword123', 9999, 999999);
 
 -- Insert regular players
-INSERT INTO Player (playerID, username, email, password, elo, totalXP) VALUES
-(1, 'Ali', 'ali@foo.com', 'password1234567890', 1000, 0),
-(2, 'Sharjeel', 'sharjeel@foo.com', 'password1234567890', 800, 2000),
-(3, 'Zaid', 'zaid@foo.com', 'qwerty', 700, 7000),
-(4, 'Steve', 'steve@foo.com', 'askldfjdsl', 1200, 4000),
-(5, 'Wozniak', 'wozniak@foo.com', 'password1234567890', 1550, 5500),
-(6, 'Emma', 'emma@foo.com', 'securepass123', 900, 3000),
-(7, 'Olivia', 'olivia@foo.com', 'oliviapass456', 1100, 3500),
-(8, 'Noah', 'noah@foo.com', 'noahsark789', 1300, 4500),
-(9, 'Liam', 'liam@foo.com', 'liamstrong321', 1400, 5000),
-(10, 'Ava', 'ava@foo.com', 'avapwd987', 1000, 3200);
+INSERT INTO Player (username, email, password, elo, totalXP) VALUES
+('Ali', 'ali@foo.com', 'password1234567890', 1000, 0),
+('Sharjeel', 'sharjeel@foo.com', 'password1234567890', 800, 2000),
+('Zaid', 'zaid@foo.com', 'qwerty', 700, 7000),
+('Steve', 'steve@foo.com', 'askldfjdsl', 1200, 4000),
+('Wozniak', 'wozniak@foo.com', 'password1234567890', 1550, 5500),
+('Emma', 'emma@foo.com', 'securepass123', 900, 3000),
+('Olivia', 'olivia@foo.com', 'oliviapass456', 1100, 3500),
+('Noah', 'noah@foo.com', 'noahsark789', 1300, 4500),
+('Liam', 'liam@foo.com', 'liamstrong321', 1400, 5000),
+('Ava', 'ava@foo.com', 'avapwd987', 1000, 3200);
 
 -- Insert player ranks
 INSERT INTO PlayerRank (elo, rank) VALUES
