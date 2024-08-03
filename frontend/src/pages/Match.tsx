@@ -1,10 +1,29 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const matches = [
+
+interface Player {
+  profile: string;
+  kda: string | null;
+  efficacy: number | null;
+}
+
+interface MatchView {
+  matchID: number;
+  datePlayed: string | null;
+  mode: string | null;
+  map: string | null;
+  xpGain: number | null;
+  eloChange: number | null;
+  result: 'Win' | 'Loss' | null;
+  allies: Player[];
+  enemies: Player[];
+}
+
+const matches:MatchView[] = [
   {
     matchID: 1,
-    datePlayed: "2024-07-01",
+    datePlayed: null,
     mode: "Deathmatch",
     map: "Dust II",
     xpGain: 500,
@@ -46,7 +65,9 @@ const matches = [
   },
 ];
 
-const Match = () => {
+
+
+const Match: React.FC = () => {
   const { matchID } = useParams();
   const navigate = useNavigate();
   const match = matches.find((m) => m.matchID === Number(matchID));
@@ -60,9 +81,9 @@ const Match = () => {
       <div className="text-4xl font-bold mb-4">Match Details</div>
       <div className="flex mb-4">
         <div className="flex-1">
-          <div>Date Played: {match.datePlayed}</div>
-          <div>Mode: {match.mode}</div>
-          <div>Map: {match.map}</div>
+          {match.datePlayed && <div>Date Played: {match.datePlayed}</div>}
+          {match.mode && <div>Mode: {match.mode}</div>}
+          {match.map && <div>Map: {match.map}</div>}
         </div>
         <div className="flex-1 text-center">
           <button
@@ -73,11 +94,13 @@ const Match = () => {
           </button>
         </div>
         <div className="flex-1 text-right">
-          <div>XP Gain: {match.xpGain}</div>
-          <div>ELO Change: {match.eloChange}</div>
-          <div className={match.result === "Win" ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
-            Result: {match.result}
-          </div>
+          {match.xpGain !== null && <div>XP Gain: {match.xpGain}</div>}
+          {match.eloChange !== null && <div>ELO Change: {match.eloChange}</div>}
+          {match.result && (
+            <div className={match.result === "Win" ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
+              Result: {match.result}
+            </div>
+          )}
         </div>
       </div>
       <div className="text-2xl font-bold mb-2">Allies</div>
@@ -89,8 +112,8 @@ const Match = () => {
             onClick={() => navigate(`/profile/${ally.profile}`)}
           >
             <div className="text-green-500 font-bold">{ally.profile}</div>
-            <div>K/D/A: {ally.kda}</div>
-            <div>Efficacy: {ally.efficacy}</div>
+            {ally.kda && <div>K/D/A: {ally.kda}</div>}
+            {ally.efficacy !== null && <div>Efficacy: {ally.efficacy}</div>}
           </div>
         ))}
       </div>
@@ -103,8 +126,8 @@ const Match = () => {
             onClick={() => navigate(`/profile/${enemy.profile}`)}
           >
             <div className="text-red-500 font-bold">{enemy.profile}</div>
-            <div>K/D/A: {enemy.kda}</div>
-            <div>Efficacy: {enemy.efficacy}</div>
+            {enemy.kda && <div>K/D/A: {enemy.kda}</div>}
+            {enemy.efficacy !== null && <div>Efficacy: {enemy.efficacy}</div>}
           </div>
         ))}
       </div>
@@ -113,4 +136,5 @@ const Match = () => {
 };
 
 export default Match;
+
 
