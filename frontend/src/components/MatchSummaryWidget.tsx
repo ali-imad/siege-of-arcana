@@ -1,5 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+
+const getPlayerMatches = async (playerID: number): Promise<Match[]> => {
+  try {
+    const response = await axios.get(`/api/matches?playerID=${playerID}`);
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else {
+      console.error('Unexpected response data format:', response.data);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching player matches:', error);
+    return [];
+  }
+};
 
 interface Match {
   matchID: number;
@@ -12,12 +28,22 @@ interface Match {
 }
 
 interface MatchSummaryWidgetCols {
-  matches: Match[];
+  playerID: 1;
 }
 
-const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ matches }) => {
+const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ playerID }) => {
   const navigate = useNavigate();
+  const [matches, setMatches] = useState<Match[]>([]);
   const [hiddenCols, setHiddenCols] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchMatches = async () => {
+      const playerMatches = await getPlayerMatches(playerID);
+      setMatches(playerMatches);
+    };
+
+    fetchMatches();
+  }, [playerID]);
 
   const handleCheckboxChange = (cols: string) => {
     setHiddenCols((prevHiddenCols) =>
@@ -68,7 +94,7 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ matches }) => {
           <label htmlFor="xpGain" className="ml-2">XP Gain</label>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto pb-8"> {/* Add padding-bottom */}
+      <div className="flex-1 overflow-y-auto pb-8">
         {matches.map((match) => (
           <div
             key={match.matchID}
