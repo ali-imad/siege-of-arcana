@@ -4,7 +4,7 @@ INSERT INTO Player (playerID, username, email, password, elo, totalXP) VALUES
 
 -- Insert regular players
 INSERT INTO Player (username, email, password, elo, totalXP) VALUES
-('Ali', 'ali@foo.com', 'password1234567890', 1000, 0),
+('Ali', 'ali@foo.com', 'password1234567890', 1000, 12000),
 ('Sharjeel', 'sharjeel@foo.com', 'password1234567890', 800, 2000),
 ('Zaid', 'zaid@foo.com', 'qwerty', 700, 7000),
 ('Steve', 'steve@foo.com', 'askldfjdsl', 1200, 4000),
