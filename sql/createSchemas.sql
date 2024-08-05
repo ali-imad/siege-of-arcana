@@ -25,16 +25,7 @@ CREATE TABLE Match (
     matchID SERIAL PRIMARY KEY,
     mode VARCHAR(50) NOT NULL,
     map VARCHAR(50) NOT NULL,
-    statsID1 INTEGER,
-    statsID2 INTEGER,
-    statsID3 INTEGER,
-    statsID4 INTEGER,
-    statsID5 INTEGER,
-    statsID6 INTEGER,
-    statsID7 INTEGER,
-    statsID8 INTEGER,
-    statsID9 INTEGER,
-    statsID10 INTEGER
+    datePlayed VARCHAR(50) NOT NULL
 );
 
 -- Create the MatchStats table
@@ -42,11 +33,12 @@ CREATE TABLE MatchStats (
     statsID SERIAL PRIMARY KEY,
     matchID INTEGER NOT NULL,
     playerID INTEGER NOT NULL,
+    xpGain INTEGER NOT NULL,
     kills INTEGER,
     deaths INTEGER,
     assists INTEGER,
     outcome VARCHAR(50),
-    FOREIGN KEY (matchID) REFERENCES Match(matchID),
+    FOREIGN KEY (matchID) REFERENCES Match(matchID) ON DELETE CASCADE,
     FOREIGN KEY (playerID) REFERENCES Player(playerID)
 );
 
@@ -55,24 +47,12 @@ CREATE TABLE MatchStatsTemp (
     statsID SERIAL PRIMARY KEY,
     matchID INTEGER,
     playerID INTEGER,
+    xpGain INTEGER,
     kills INTEGER,
     deaths INTEGER,
     assists INTEGER,
     outcome VARCHAR(50)
 );
-
-ALTER TABLE Match 
-    ADD CONSTRAINT fk_statsID1 FOREIGN KEY (statsID1) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID2 FOREIGN KEY (statsID2) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID3 FOREIGN KEY (statsID3) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID4 FOREIGN KEY (statsID4) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID5 FOREIGN KEY (statsID5) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID6 FOREIGN KEY (statsID6) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID7 FOREIGN KEY (statsID7) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID8 FOREIGN KEY (statsID8) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID9 FOREIGN KEY (statsID9) REFERENCES MatchStats(statsID) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_statsID10 FOREIGN KEY (statsID10) REFERENCES MatchStats(statsID) ON DELETE CASCADE;
-
 
 -- Create the MatchReward table
 CREATE TABLE MatchReward (

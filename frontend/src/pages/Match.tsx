@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-
+import axios from 'axios';
 
 interface Player {
   profile: string;
@@ -10,67 +10,40 @@ interface Player {
 
 interface MatchView {
   matchID: number;
-  datePlayed: string | null;
+  dateplayed: string | null;
   mode: string | null;
   map: string | null;
-  xpGain: number | null;
-  eloChange: number | null;
-  result: 'Win' | 'Loss' | null;
   allies: Player[];
   enemies: Player[];
 }
 
-const matches:MatchView[] = [
-  {
-    matchID: 1,
-    datePlayed: null,
-    mode: "Deathmatch",
-    map: "Dust II",
-    xpGain: 500,
-    eloChange: 25,
-    result: "Win",
-    allies: [
-      { profile: "Ali", kda: "10/5/8", efficacy: 0.9 },
-      { profile: "Sharj", kda: "8/3/10", efficacy: 0.85 },
-      { profile: "Ali", kda: "10/5/8", efficacy: 0.9 },
-      { profile: "Sharj", kda: "8/3/10", efficacy: 0.85 },
-      { profile: "Ali", kda: "10/5/8", efficacy: 0.9 },
-      { profile: "Sharj", kda: "8/3/10", efficacy: 0.85 },
-    ],
-    enemies: [
-      { profile: "Gregor", kda: "5/10/2", efficacy: 0.5 },
-      { profile: "Jordan", kda: "4/9/3", efficacy: 0.45 },
-      { profile: "Ali", kda: "10/5/8", efficacy: 0.9 },
-      { profile: "Sharj", kda: "8/3/10", efficacy: 0.85 },
-      { profile: "Ali", kda: "10/5/8", efficacy: 0.9 },
-      { profile: "Sharj", kda: "8/3/10", efficacy: 0.85 },
-    ],
-  },
-  {
-    matchID: 2,
-    datePlayed: "2024-07-02",
-    mode: "Competitive",
-    map: "Mirage",
-    xpGain: 300,
-    eloChange: -15,
-    result: "Loss",
-    allies: [
-      { profile: "Ali", kda: "5/10/8", efficacy: 0.6 },
-      { profile: "Sharj", kda: "6/8/5", efficacy: 0.65 },
-    ],
-    enemies: [
-      { profile: "Gregor", kda: "10/5/4", efficacy: 0.8 },
-      { profile: "Jordan", kda: "9/4/6", efficacy: 0.75 },
-    ],
-  },
-];
-
-
-
 const Match: React.FC = () => {
-  const { matchID } = useParams();
+  const { matchID } = useParams<{ matchID: string }>();
   const navigate = useNavigate();
-  const match = matches.find((m) => m.matchID === Number(matchID));
+  const [match, setMatch] = useState<MatchView | null>(null);
+
+  useEffect(() => {
+    const fetchMatchDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5151/api/match/view/${matchID}`);
+        setMatch(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching match details:', error);
+      }
+    };
+
+    fetchMatchDetails();
+  }, [matchID]);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5151/api/match/delete/${matchID}`);
+      navigate(-1);
+    } catch (error) {
+      console.error('Error deleting match:', error);
+    }
+  };
 
   if (!match) {
     return <div>Match not found</div>;
@@ -81,7 +54,7 @@ const Match: React.FC = () => {
       <div className="text-4xl font-bold mb-4">Match Details</div>
       <div className="flex mb-4">
         <div className="flex-1">
-          {match.datePlayed && <div>Date Played: {match.datePlayed}</div>}
+          {match.dateplayed && <div>Date Played: {match.dateplayed}</div>}
           {match.mode && <div>Mode: {match.mode}</div>}
           {match.map && <div>Map: {match.map}</div>}
         </div>
@@ -94,13 +67,12 @@ const Match: React.FC = () => {
           </button>
         </div>
         <div className="flex-1 text-right">
-          {match.xpGain !== null && <div>XP Gain: {match.xpGain}</div>}
-          {match.eloChange !== null && <div>ELO Change: {match.eloChange}</div>}
-          {match.result && (
-            <div className={match.result === "Win" ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
-              Result: {match.result}
-            </div>
-          )}
+          <button
+            className="bg-red-500 text-white rounded-lg px-4 py-2 mb-4"
+            onClick={handleDelete}
+          >
+            Delete Match
+          </button>
         </div>
       </div>
       <div className="text-2xl font-bold mb-2">Allies</div>
@@ -136,5 +108,3 @@ const Match: React.FC = () => {
 };
 
 export default Match;
-
-

@@ -1,0 +1,7 @@
+### GET request to example server
+GET http://localhost:5151/api/match/view/1
+####
+GET http://localhost:5151/api/match/1
+
+####
+DELETE http://localhost:5151/api/match/delete/2
