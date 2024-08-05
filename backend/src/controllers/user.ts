@@ -43,25 +43,48 @@ export async function getUserByID(playerID: number): Promise<any> {
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
-export async function getUserByName(username: string): Promise<any> {
+export async function getUserByNameAndPassword(username: string, password: string): Promise<any> {
   const sql = format(
-    'SELECT * FROM %I WHERE username = %L;',
+    'SELECT * FROM %I WHERE username = %L AND password = %L;',
     RELATION_NAME,
     username,
+    password
   );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
-export async function getUserByEmail(email: string): Promise<any> {
+export async function getUserByEmailAndPassword(email: string, password: string): Promise<any> {
   const sql = format(
-    'SELECT * FROM %I WHERE email = %L;',
+    'SELECT * FROM %I WHERE email = %L AND password = %L;',
     RELATION_NAME,
     email,
+    password
   );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
+
+export async function getUserRank(elo: number): Promise<any> {
+  const sql = format(
+    'SELECT * FROM PlayerRank WHERE elo = %L',
+     elo
+  );
+  const rsp = await query(sql);
+  return rsp.rows.length > 0 ? rsp.rows[0] : null;
+}
+
+export async function getUserLevel(totalXP: number): Promise<any> {
+  const remainder = totalXP % 1000;
+  const earnedXP = totalXP - remainder;
+  const sql = format(
+    'SELECT * FROM PlayerLevel WHERE xp = %L',
+    earnedXP
+  );
+  const rsp = await query(sql);
+  return rsp.rows.length > 0 ? rsp.rows[0] : null;
+}
+
 
 export async function updateUserByID(
   playerID: number,
