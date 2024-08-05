@@ -17,6 +17,7 @@ interface MatchView {
   enemies: Player[];
 }
 
+//TODO: Get this to route back to the proper player, and when you click somewhere route to the right profile??
 const Match: React.FC = () => {
   const { matchID } = useParams<{ matchID: string }>();
   const navigate = useNavigate();
