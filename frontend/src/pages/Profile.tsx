@@ -31,7 +31,7 @@ const Profile = () => {
 
 
   const getRank = async (elo) => {
-    const url = `http://localhost:5001/api/user/name/${elo}`;
+    const url = `http://localhost:5151/api/user/name/${elo}`;
     try {
       const response = await axios.get(url);
       return response.data;
@@ -42,7 +42,7 @@ const Profile = () => {
   };
 
   const getLevel = async (totalXP) => {
-    const url = `http://localhost:5001/api/user/profile/${totalXP}`;
+    const url = `http://localhost:5151/api/user/profile/${totalXP}`;
     try {
       const response = await axios.get(url);
       return response.data;
@@ -53,7 +53,7 @@ const Profile = () => {
   };
 
   const getSmurf = async (pid) => {
-    const url = `http://localhost:5001/api/match/smurfdetect/${pid}`;
+    const url = `http://localhost:5151/api/match/smurfdetect/${pid}`;
     try {
       const response = await axios.get(url);
       return response.data;
@@ -64,7 +64,7 @@ const Profile = () => {
   };
 
   const getTotalOutcomes = async (pid) => {
-    const url = `http://localhost:5001/api/match/outcome/${pid}`;
+    const url = `http://localhost:5151/api/match/outcome/${pid}`;
     try {
       const response = await axios.get(url);
       return response.data;
@@ -75,7 +75,7 @@ const Profile = () => {
   };
 
   const getCertainOutcomes = async (pid, outcome) => {
-    const url = `http://localhost:5001/api/match/outcome/${pid}/${outcome}`;
+    const url = `http://localhost:5151/api/match/outcome/${pid}/${outcome}`;
     try {
       const response = await axios.get(url);
       return response.data;

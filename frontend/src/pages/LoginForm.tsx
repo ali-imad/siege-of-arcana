@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 
 export const getUser = async (username, password) => {
-    const url = `http://localhost:5001/api/user/login`;
+    const url = `http://localhost:5151/api/user/login`;
     try {
         const response = await axios.post(url, { username, password });
         return response.data;
@@ -21,7 +21,7 @@ const LoginForm = (props) => {
     const navigate = useNavigate();
     
     const getEmail = async (email, password) => {
-        const url = `http://localhost:5001/api/user/register`;
+        const url = `http://localhost:5151/api/user/register`;
         try {
             const response = await axios.post(url, { email, password });
             return response.data;

@@ -11,7 +11,7 @@ const RegisterForm = () => {
     const navigate = useNavigate();
 
     const registerUser = async (e: string, u: string, p: string) => {
-        const url = `http://localhost:5001/api/user/create`;
+        const url = `http://localhost:5151/api/user/create`;
         try {
           const userData = {
             email: e,

@@ -15,7 +15,7 @@ const UpdateForm = () => {
     const navigate = useNavigate();
 
     const updateUser = async (id: string, e: string, u: string, p: string) => {
-        const url = `http://localhost:5001/api/user/update/${id}`;
+        const url = `http://localhost:5151/api/user/update/${id}`;
         try {
             const userData = {
                 email: e,
