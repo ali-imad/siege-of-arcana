@@ -260,7 +260,8 @@ const SmurfLabel = () => {
   return (
     <div className='container mx-auto p-4 bg-grey-100'>
       <div className='text-4xl font-bold'>Profile</div>
-      <MatchSummaryWidget matches={matches} />
+      <MatchSummaryWidget playerID={JSON.parse(localStorage.getItem('user')).playerid} />
+
 
       <div>{userJSON.username}</div>
       {rank && <div>Rank: {rank}</div>}
