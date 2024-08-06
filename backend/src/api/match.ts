@@ -24,18 +24,32 @@ router.get('/:playerID', async (req, res) => {
   }
 });
 
-router.get('/view/:matchID', async (req, res) => {
+
+
+router.get('/view/:matchID/:playerID', async (req, res) => {
   const matchID = parseInt(req.params.matchID, 10);
-  logger.debug(matchID);
+  const playerID = parseInt(req.params.playerID, 10);
+
+  logger.debug(`MatchID: ${matchID}, PlayerID: ${playerID}`);
+
   if (isNaN(matchID)) {
+    return res.status(400).send('Invalid match ID');
+  }
+
+  if (isNaN(playerID)) {
     return res.status(400).send('Invalid player ID');
   }
 
-  const matches = await getMatchStats(matchID);
-  if (matches) {
-    res.json(matches);
-  } else {
-    res.status(404).send('No matches found for player');
+  try {
+    const matches = await getMatchStats(matchID, playerID);
+    if (matches) {
+      res.json(matches);
+    } else {
+      res.status(404).send('No matches found for player');
+    }
+  } catch (err) {
+    logger.error('Error fetching match stats', err);
+    res.status(500).send('Server error');
   }
 });
 

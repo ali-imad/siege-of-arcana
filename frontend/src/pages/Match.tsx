@@ -13,6 +13,7 @@ interface MatchView {
   dateplayed: string | null;
   mode: string | null;
   map: string | null;
+  outcome: string | null;
   allies: Player[];
   enemies: Player[];
 }
@@ -26,7 +27,7 @@ const Match: React.FC = () => {
   useEffect(() => {
     const fetchMatchDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5151/api/match/view/${matchID}`);
+        const response = await axios.get(`http://localhost:5151/api/match/view/${matchID}/${JSON.parse(localStorage.getItem('user')).playerid}`);
         setMatch(response.data);
         console.log(response.data);
       } catch (error) {
@@ -58,6 +59,7 @@ const Match: React.FC = () => {
           {match.dateplayed && <div>Date Played: {match.dateplayed}</div>}
           {match.mode && <div>Mode: {match.mode}</div>}
           {match.map && <div>Map: {match.map}</div>}
+          {match.outcome && <div>Map: {match.outcome}</div>}
         </div>
         <div className="flex-1 text-center">
           <button
