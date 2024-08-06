@@ -6,7 +6,7 @@ import axios from 'axios';
 //TODO: Get this to properly route from the properPlayer.
 const getPlayerMatches = async (playerID: number): Promise<Match[]> => {
   try {
-    const response = await axios.get(`http://localhost:5151/api/match/1`);
+    const response = await axios.get(`http://localhost:5151/api/match/${playerID}`);
     if (Array.isArray(response.data)) {
       return response.data;
     } else {
@@ -32,7 +32,7 @@ interface Match {
 }
 
 interface MatchSummaryWidgetCols {
-  playerID: 1;
+  playerID: number | null;
 }
 
 const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ playerID }) => {
