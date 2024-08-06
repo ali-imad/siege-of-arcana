@@ -2,6 +2,8 @@ import {ItemType} from "../interfaces/ItemType.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import BalanceWidget, {Balance} from "../components/BalanceWidget.tsx";
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const BE_URL = import.meta.env.VITE_BE_ROUTE;
 
@@ -334,9 +336,23 @@ const Shop = () => {
     }
     axios.post(`${BE_URL}/api/shop/buy`, purchaseReq).then((resp) => {
       setRefresh(true);
+      toast.success('Purchase successful!', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+      })
       // TODO: add toast notif
       // console.log(resp.data)
     }).catch((err) => {
+      toast.error('Error purchasing item', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+      })
       // TODO: add toast error
       console.error(err)
     })
@@ -367,6 +383,7 @@ const Shop = () => {
           onClose={() => setShowTxHistory(false)}
         />
       )}
+      <ToastContainer/>
     </div>
   );
 };
