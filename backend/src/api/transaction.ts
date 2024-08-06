@@ -4,7 +4,7 @@ import { getTransactionsByPlayerID } from '../controllers/transaction';
 const router = express.Router();
 
 // get all transactions by player ID
-router.get('/:playerID', async (req, res) => {
+router.get('/history/:playerID', async (req, res) => {
   const { playerID } = req.params;
   const pid = parseInt(playerID);
   if (!pid && pid !== 0) {
@@ -19,6 +19,13 @@ router.get('/:playerID', async (req, res) => {
     res.status(500).json({ error: 'Failed to get transactions' });
     return;
   }
+});
+
+// get filtered transaction rows by player ID
+router.post('/:playerID/filter', async (req, res) => {
+  const { playerID } = req.params;
+  const pid = parseInt(playerID);
+  const filters = req.body;
 });
 
 export default router;

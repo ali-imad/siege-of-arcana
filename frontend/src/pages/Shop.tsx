@@ -4,6 +4,7 @@ import axios from "axios";
 import BalanceWidget, {Balance} from "../components/BalanceWidget.tsx";
 import {ToastContainer, toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import ModularRelationTable from "../components/ModularHistory.tsx";
 
 const BE_URL = import.meta.env.VITE_BE_ROUTE;
 
@@ -174,6 +175,22 @@ function TxHistoryButton(props: TxHistoryButtonProps) {
   </div>);
 }
 
+function RawHistoryButton(props: TxHistoryButtonProps) {
+  const {onClick} = props;
+  return (<div>
+    <button
+      className={'rounded-3xl bg-soa-peach text-soa-dark ' +
+        'px-6 py-4 mb-4 ' +
+        'border-2 border-soa-dark ' +
+        'bg-opacity-30 hover:bg-opacity-100 duration-500 hover:transition-all ' +
+        'font-xl font-bold'}
+      onClick={onClick}
+    >
+      Raw Tables View
+    </button>
+  </div>);
+}
+
 const Shop = () => {
   const [filters, setFilters] = useState<IShop[] | null>([]);
   const [filter, setFilter] = useState<number | null>(null);
@@ -181,12 +198,17 @@ const Shop = () => {
   const [items, setItems] = useState<ShopItem[]>([]);
   const [txHistory, setTxHistory] = useState<TxHistoryRow[]>([]);
   const [showTxHistory, setShowTxHistory] = useState<boolean>(false);
+  const [showRawHistory, setShowRawHistory] = useState<boolean>(false);
   const [balances, setBalances] = useState<Balance[]>([]);
   const [refresh, setRefresh] = useState<boolean>(true);
   const pid = JSON.parse(localStorage.getItem('user')).playerid
 
   const handleTxHistoryButton = () => {
     setShowTxHistory(!showTxHistory);
+  };
+
+  const handleRawHistoryButton = () => {
+    setShowRawHistory(!showRawHistory);
   };
 
   // get user balances
@@ -293,7 +315,7 @@ const Shop = () => {
     if (!showTxHistory) return;
     const fetchTxHistory = async () => {
       try {
-        const resp = await axios.get(`${BE_URL}/api/transaction/${pid}`);
+        const resp = await axios.get(`${BE_URL}/api/transaction/history/${pid}`);
         const mappedTxHistory = resp.data.transactions.map((item) => {
           return {
             txID: item.txid,
@@ -371,6 +393,9 @@ const Shop = () => {
         <div>
           <TxHistoryButton onClick={handleTxHistoryButton}/>
         </div>
+        <div>
+          <RawHistoryButton onClick={handleRawHistoryButton}/>
+        </div>
       </div>
       <div className='grid grid-cols-3 gap-4 mt-4'>
         {items.map(item => (
@@ -382,6 +407,9 @@ const Shop = () => {
           txHistory={txHistory}
           onClose={() => setShowTxHistory(false)}
         />
+      )}
+      {showRawHistory && (
+        <ModularRelationTable pid={pid} onClose={() => setShowRawHistory(false)} />
       )}
       <ToastContainer/>
     </div>

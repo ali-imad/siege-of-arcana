@@ -11,7 +11,6 @@ import {
   TRANSACTION_RELATION,
 } from '../interfaces/relations';
 
-
 interface TxRow {
   txid: number;
   itemname: string;
