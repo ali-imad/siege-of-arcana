@@ -41,3 +41,16 @@ currency balance.
 
 - Centralized marketplace for in-game items with multiple shops.
 - Contains player transaction history and currency balance.
+
+## Building
+
+#### Requirements:
+- Node 20
+- Postgresql
+
+**Instructions:**
+1. Navigate to `sql/` and insert `createSchemas.sql` and `insertSampleData.sql` to your database
+2. Create a `.env` file in `frontend/` and `backend/` using the example `.env.sample` in each directory
+3. Individually open a terminal window to each of `frontend/` and `backend/` and call `npm i` to install all dependencies
+4. Call `npm run dev`in each terminal
+5. Visit the application at `localhost:5173`
