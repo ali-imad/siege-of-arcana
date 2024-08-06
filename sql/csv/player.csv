@@ -1,0 +1,12 @@
+playerid,username,email,password,elo,totalxp
+0,admin,admin@gamecompany.com,superSecurePassword123,9999,999999
+1,Ali,ali@foo.com,password,1000,12000
+2,Sharjeel,sharjeel@foo.com,password1234567890,800,2000
+3,Zaid,zaid@foo.com,qwerty,700,7000
+4,Steve,steve@foo.com,askldfjdsl,1200,4000
+5,Wozniak,wozniak@foo.com,password1234567890,1550,5500
+6,Emma,emma@foo.com,securepass123,900,3000
+7,Olivia,olivia@foo.com,oliviapass456,1100,3500
+8,Noah,noah@foo.com,noahsark789,1300,4500
+9,Liam,liam@foo.com,liamstrong321,1400,5000
+10,Ava,ava@foo.com,avapwd987,1000,3200

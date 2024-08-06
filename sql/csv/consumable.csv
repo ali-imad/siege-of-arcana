@@ -1,0 +1,5 @@
+itemid,expiration,effect
+1,,Heals 50 HP
+2,,Increases strength by 10% for 30 seconds
+5,30,Grants 100 XP
+13,,Grants 10 Essence
