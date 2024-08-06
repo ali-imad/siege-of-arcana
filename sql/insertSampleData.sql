@@ -109,7 +109,14 @@ INSERT INTO MatchStatsTemp (matchID, playerID, xpGain, kills, deaths, assists, o
 (5, 2, 65, 10, 15, 4, 'Loss'),
 (5, 4, 85, 11, 13, 5, 'Loss'),
 (5, 7, 55, 9, 16, 6, 'Loss'),
-(5, 8, 45, 13, 12, 4, 'Loss');
+(5, 8, 45, 13, 12, 4, 'Loss'),
+-- Match 6
+(6, 3, 190, 19, 8, 4, 'Win'),
+(6, 5, 180, 17, 10, 5, 'Win'),
+(6, 6, 170, 15, 11, 6, 'Win'),
+(6, 4, 85, 11, 13, 5, 'Loss'),
+(6, 7, 55, 9, 16, 6, 'Loss'),
+(6, 8, 45, 13, 12, 4, 'Loss');
 
 -- Move data from staging table to MatchStats
 INSERT INTO MatchStats (matchID, playerID, xpGain, kills, deaths, assists, outcome)

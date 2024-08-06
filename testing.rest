@@ -1,2 +1,2 @@
 ### Update user success
-GET http://localhost:5001/api/match/smurfdetect/1
+GET http://localhost:5151/api/user/performance/1

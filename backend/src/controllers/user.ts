@@ -129,3 +129,47 @@ export async function deleteUserByID(playerID: number): Promise<boolean> {
     return false;
   }
 }
+
+export async function getPlayerPerformanceAnalysis(playerID: number): Promise<any> {
+  const sql = format(`
+    WITH OverallAverages AS (
+      SELECT 
+        m.mode,
+        AVG(ms.kills) as avg_overall_kills,
+        AVG(ms.deaths) as avg_overall_deaths,
+        AVG(ms.assists) as avg_overall_assists
+      FROM MatchStats ms
+      JOIN Match m ON ms.matchID = m.matchID
+      GROUP BY m.mode
+    )
+    SELECT 
+      m.mode,
+      AVG(ms.kills) as avg_player_kills,
+      AVG(ms.deaths) as avg_player_deaths,
+      AVG(ms.assists) as avg_player_assists,
+      oa.avg_overall_kills,
+      oa.avg_overall_deaths,
+      oa.avg_overall_assists
+    FROM MatchStats ms
+    JOIN Match m ON ms.matchID = m.matchID
+    JOIN OverallAverages oa ON m.mode = oa.mode
+    WHERE ms.playerID = %L
+    GROUP BY m.mode, oa.avg_overall_kills, oa.avg_overall_deaths, oa.avg_overall_assists
+    ORDER BY m.mode;
+  `, 
+  playerID);
+
+  try {
+    const rsp = await query(sql);
+    if (rsp.rows && rsp.rows.length > 0) {
+      return rsp.rows;
+    } else {
+      logger.error('User created but no playerID returned');
+      return null;
+    }
+  } catch (err) {
+    logger.error('Error executing query', err);
+    return null;
+  }
+  
+}

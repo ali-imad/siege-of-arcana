@@ -7,16 +7,6 @@ import UpdateInfo from '../components/UpdateInfo';
 import MatchSummaryWidget from "../components/MatchSummaryWidget";
 import { Button } from 'react-bootstrap';
 
-const matches = [
-  { matchID: 1, result: "Win", map: "Dust II", mode: "Deathmatch", datePlayed: "2024-07-01", xpGain: 500, kda: "10/5/8" },
-  { matchID: 2, result: "Loss", map: "Mirage", mode: "Competitive", datePlayed: "2024-07-02", xpGain: 300, kda: "8/10/4" },
-  { matchID: 3, result: "Win", map: "Dust II", mode: "Deathmatch", datePlayed: "2024-07-01", xpGain: 500, kda: "10/5/8" },
-  { matchID: 4, result: "Loss", map: "Mirage", mode: "Competitive", datePlayed: "2024-07-02", xpGain: 300, kda: "8/10/4" },
-  { matchID: 5, result: "Win", map: "Dust II", mode: "Deathmatch", datePlayed: "2024-07-01", xpGain: 500, kda: "10/5/8" },
-  { matchID: 6, result: "Loss", map: "Mirage", mode: "Competitive", datePlayed: "2024-07-02", xpGain: 300, kda: "8/10/4" },
-  { matchID: 6, result: "Loss", map: "Mirage", mode: "Competitive", datePlayed: "2024-07-02", xpGain: 300, kda: "8/10/4" },
-];
-
 const Profile = () => {
   const user = localStorage.getItem('user');
   const userJSON = JSON.parse(user);
@@ -28,6 +18,8 @@ const Profile = () => {
   const [outcome, setOutcome] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [showOutcomes, setShowOutcomes] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [analysis, setAnalysis] = useState([])
 
 
   const getRank = async (elo) => {
@@ -81,6 +73,17 @@ const Profile = () => {
       return response.data;
     } catch (error) {
       console.error('Error fetching level:', error);
+      throw error;
+    }
+  };
+
+  const getPerformanceAnlysis = async (pid) => {
+    const url = `http://localhost:5151/api/user/performance/${pid}`;
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching analysis:', error);
       throw error;
     }
   };
@@ -145,18 +148,13 @@ const ProgressBar = ({ value, max, label }) => {
 const handleOutcomes = async () => {
 
     try {
-      if (profileSelect === 'Wins and Losses') {
+      if (profileSelect === 'All Outcomes') {
         const outcomeData = await getTotalOutcomes(userJSON.playerid);
         console.log(outcomeData);
         setOutcome(outcomeData)
         setShowOutcomes(true);
-      } else if (profileSelect === "Wins") {
-        const outcomeData = await getCertainOutcomes(userJSON.playerid, 'Win');
-        console.log(outcomeData);
-        setOutcome(outcomeData)
-        setShowOutcomes(true);
-      } else if (profileSelect === "Losses"){
-        const outcomeData = await getCertainOutcomes(userJSON.playerid, 'Loss');
+      } else if (options.find(o => profileSelect === o.label)) {
+        const outcomeData = await getCertainOutcomes(userJSON.playerid, profileSelect);
         console.log(outcomeData);
         setOutcome(outcomeData)
         setShowOutcomes(true);
@@ -171,49 +169,57 @@ const handleOutcomes = async () => {
 
 }
 const displayOutcomes = () => {
-
-  if (profileSelect === 'Wins and Losses') {
+  if (profileSelect === 'All Outcomes') {
+    console.log(options)
     return (
       <div>
         {outcome.map((item, index) => (
           <div key={index}>
-            <br></br>
-            <p>Outcome: {item.outcome}</p>
-            <p>Count: {item.count}</p>
-            <br></br>
+            <p>Outcome: {item.outcome} Count: {item.count}</p>
           </div>
         ))}
       </div>
     );
-  } else if (profileSelect === "Wins") {
+  } else if (options.find(o => profileSelect === o.label)) {
     return (
       <div>
         <br></br>
-          <p>Outcome: {outcome.outcome}</p>
-          <p>Count: </p>
-        </div>
-      )
-  } else if (profileSelect === "Losses"){
-    return (
-      <div>
+        <p>Outcome: {outcome.outcome} Count: {outcome.count}</p>
         <br></br>
-          <p>Outcome: {outcome.outcome}</p>
-          <p>Count: {outcome.count}</p>
-        </div>
-      )
+      </div>
+    );
   } else {
-    console.log("no outcome selected yet")
-    setErrorMessage('please select an outcome from the dropdown')
-  }
+      return (
+        <div>
+          <p>No outcome data available for the selected profile.</p>
+        </div>
+      );
+    }
+  };
 
-}
 
 
-const options = [
-  { value: 1, label: 'Wins and Losses' },
-  { value: 2, label: 'Wins' },
-  { value: 3, label: 'Losses' }
-];
+useEffect(() => {
+  const fetchOptions = async () => {
+    try {
+      const optionData = await getTotalOutcomes(userJSON.playerid);
+      
+      const transformedOptions = optionData.map((option, index) => ({
+        value: index + 1,
+        label: `${option.outcome}`
+      }));
+
+      transformedOptions.unshift({ value: 0, label: 'All Outcomes' });
+
+      setOptions(transformedOptions);
+      console.log(transformedOptions);
+    } catch (error) {
+      console.error('Error setting options:', error);
+    }
+  };
+
+  fetchOptions();
+}, [userJSON.playerid]);
 
 const SelectComponent = () => {
 
@@ -256,13 +262,50 @@ const SmurfLabel = () => {
   }
 }
 
+const handlePerformance = async () => {
+  const analysisData = await getPerformanceAnlysis(userJSON.playerid);
+  setAnalysis(analysisData)
+  console.log(analysisData)
+}
+
+const AnalysisTable = ({ analysis }) => {
+  return (
+    <div className="w-1/2 ml-0 mx-auto overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-300">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-2 border-b">Mode</th>
+            <th className="px-4 py-2 border-b">Avg Player Kills</th>
+            <th className="px-4 py-2 border-b">Avg Player Deaths</th>
+            <th className="px-4 py-2 border-b">Avg Player Assists</th>
+            <th className="px-4 py-2 border-b">Avg Overall Kills</th>
+            <th className="px-4 py-2 border-b">Avg Overall Deaths</th>
+            <th className="px-4 py-2 border-b">Avg Overall Assists</th>
+          </tr>
+        </thead>
+        <tbody>
+          {analysis.map((item, index) => (
+            <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+              <td className="px-4 py-2 border-b">{item.mode}</td>
+              <td className="px-4 py-2 border-b">{parseFloat(item.avg_player_kills).toFixed(2)}</td>
+              <td className="px-4 py-2 border-b">{parseFloat(item.avg_player_deaths).toFixed(2)}</td>
+              <td className="px-4 py-2 border-b">{parseFloat(item.avg_player_assists).toFixed(2)}</td>
+              <td className="px-4 py-2 border-b">{parseFloat(item.avg_overall_kills).toFixed(2)}</td>
+              <td className="px-4 py-2 border-b">{parseFloat(item.avg_overall_deaths).toFixed(2)}</td>
+              <td className="px-4 py-2 border-b">{parseFloat(item.avg_overall_assists).toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 
   return (
     <div className='container mx-auto p-4 bg-grey-100'>
       <div className='text-4xl font-bold'>Profile</div>
       <MatchSummaryWidget playerID={JSON.parse(localStorage.getItem('user')).playerid} />
-
-
       <div>{userJSON.username}</div>
       {rank && <div>Rank: {rank}</div>}
       {level && <div>Level: {level}</div>}
@@ -272,7 +315,8 @@ const SmurfLabel = () => {
       label={'level progress:'}/>
       <UpdateInfo></UpdateInfo>
       <SmurfLabel></SmurfLabel>
-      <br></br>
+      <button className="bg-soa-accent text-white p-1 px-2 rounded-lg" onClick={() => handlePerformance()}>See Performance Analysis</button>
+      <AnalysisTable analysis={analysis}></AnalysisTable>
       <SelectComponent></SelectComponent>
       </div>
   );

@@ -10,6 +10,7 @@ import {
   getUserByEmailAndPassword,
   getUserRank,
   getUserLevel,
+  getPlayerPerformanceAnalysis,
 } from '../controllers/user';
 import logger from '../utils/logger';
 
@@ -49,6 +50,26 @@ router.get('/:playerID', async (req, res) => {
     res.status(500).json({ error: 'Failed to get user' });
     return;
   }
+});
+
+// get player performance analytics
+router.get('/performance/:playerID', async (req, res) => {
+  const { playerID } = req.params;
+  const pid = parseInt(playerID);
+  if (!pid && pid !== 0) {
+    res.status(400).json({ error: 'Invalid playerID' });
+    return;
+  }
+  const analysis = await getPlayerPerformanceAnalysis(pid);
+  if (!analysis) {
+    logger.error('Failed to get analysis');
+
+    res.status(500).json({ error: 'Failed to get analysis' });
+    return;
+  }
+
+  res.json(analysis);
+
 });
 
   // get user profile row
