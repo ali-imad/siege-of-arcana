@@ -253,7 +253,6 @@ export async function getPlayerOutcome(
 ): Promise<object[] | null> {
   let sql;
   if (outcome === 'all') {
-    // get all player outcomes with GROUP BY
     sql = format(
       `
       SELECT 
@@ -271,7 +270,6 @@ export async function getPlayerOutcome(
       playerID,
     );
   } else {
-    // get all player outcomes with WHERE
     sql = format(
       `
       SELECT 
@@ -301,4 +299,36 @@ export async function getPlayerOutcome(
   }
 
   return rsp.rows;
+}
+
+export async function getGameModesNotPlayed(playerID: number): Promise<string[]> {
+  const sql = format(
+    `WITH AllGameModes AS (
+        SELECT DISTINCT mode
+        FROM Match
+    ),
+    PlayerGameModes AS (
+        SELECT DISTINCT m.mode
+        FROM MatchStats ms
+        JOIN Match m ON ms.matchID = m.matchID
+        WHERE ms.playerID = %s
+    )
+    SELECT agm.mode AS unplayedmode
+    FROM AllGameModes agm
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM PlayerGameModes pgm
+        WHERE pgm.mode = agm.mode
+    );`,
+    playerID);
+
+  try {
+    logger.debug('playerID:', playerID);
+    const result = await query(sql);
+    logger.debug('Query result:', result.rows);
+    return result.rows.map(row => row.unplayedmode);
+  } catch (err) {
+    logger.error('Error fetching game modes not played', err);
+    return [];
+  }
 }

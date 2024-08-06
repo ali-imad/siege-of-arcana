@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  deleteMatch, getMatchStats,
+  deleteMatch, getGameModesNotPlayed, getMatchStats,
   getPlayerIsSmurf,
   getPlayerMatches,
   getPlayerOutcome,
@@ -107,5 +107,27 @@ router.get('/outcome/:playerID/:outcome', async (req, res) => {
 
   res.json(matches[0]);
 });
+
+router.get('/unplayedmode/:playerID', async (req, res) => {
+  const playerID = parseInt(req.params.playerID, 10);
+
+  if (isNaN(playerID)) {
+    return res.status(400).send('Invalid player ID');
+  }
+
+  try {
+    const unplayedModes = await getGameModesNotPlayed(playerID);
+
+    logger.debug(`Unplayed modes found for player ID ${playerID}`);
+    logger.debug(JSON.stringify(unplayedModes));
+
+    res.json(unplayedModes);
+  } catch (err) {
+    logger.error('Error fetching unplayed modes', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 export default router;
