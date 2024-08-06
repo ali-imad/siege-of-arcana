@@ -39,7 +39,6 @@ export async function createMatch(
   }
 }
 
-//TODO: ISOLATE ALLIES BASED ON LOCALSTORAGE.USER.MatchSTats.Out
 export async function getPlayerMatches(playerID: number): Promise<any | null> {
   const sql = format(
     `SELECT 
@@ -81,6 +80,7 @@ interface MatchView {
   dateplayed: string | null;
   mode: string | null;
   map: string | null;
+  outcome: string | null;
   allies: Player[];
   enemies: Player[];
 }
@@ -91,7 +91,7 @@ interface Player {
   efficacy: number | null;
 }
 
-export async function getMatchStats(matchIDS: number): Promise<MatchView | null> {
+export async function getMatchStats(matchIDS: number, playerIDS: number): Promise<MatchView | null> {
   const sql = format(`
     SELECT 
       m.matchID, 
@@ -114,10 +114,25 @@ export async function getMatchStats(matchIDS: number): Promise<MatchView | null>
       m.matchID = %L;
   `, matchIDS);
 
+  const out = format(`
+    SELECT 
+      ms.outcome 
+    FROM 
+      Match m 
+    JOIN 
+      MatchStats ms ON m.matchID = ms.matchID 
+    JOIN 
+      Player p ON ms.playerID = p.playerID 
+    WHERE 
+      m.matchID = %L and p.playerID = %L
+  `, matchIDS, playerIDS);
+
   try {
+    const ally = await query(out);
     const rsp = await query(sql);
-    if (rsp.rows && rsp.rows.length > 0) {
+    if (rsp.rows && rsp.rows.length > 0 && ally.rows && ally.rows.length > 0) {
       const { matchID, mode, map, dateplayed } = rsp.rows[0];
+      const outcome = ally.rows[0].outcome;
 
       const allies: Player[] = [];
       const enemies: Player[] = [];
@@ -128,7 +143,7 @@ export async function getMatchStats(matchIDS: number): Promise<MatchView | null>
           kda: `${row.kills}/${row.deaths}/${row.assists}`,
           efficacy: null,
         };
-        if (row.outcome === 'Win') {
+        if (row.outcome === outcome) {
           allies.push(player);
         } else {
           enemies.push(player);
@@ -140,6 +155,7 @@ export async function getMatchStats(matchIDS: number): Promise<MatchView | null>
         dateplayed,
         mode,
         map,
+        outcome,
         allies,
         enemies,
       };
