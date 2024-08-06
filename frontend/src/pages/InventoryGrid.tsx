@@ -1,9 +1,11 @@
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ItemType} from "../interfaces/ItemType.tsx";
+import axios from "axios";
+const BE_URL = import.meta.env.VITE_BE_ROUTE;
 
-enum InventoryName {
+enum InventoryName { // this name must match route name
   Main = 'Main',
-  GiftBox = 'Gift Box'
+  Gift = 'Gift'
 }
 
 const ItemActions: Record<ItemType, string> = {
@@ -13,17 +15,17 @@ const ItemActions: Record<ItemType, string> = {
 
 interface InventoryItem {
   name: string;
-  amt: number;
+  quantity: number;
   type: ItemType;
   inventory: InventoryName;
 }
 
 const ItemDiv = (props: InventoryItem) => {
-  const {name, amt, type, inventory} = props;
+  const {name, quantity, type, inventory} = props;
   return (
     <div className='bg-white border-2 border-soa-peach rounded-lg p-4 shadow-shopListing'>
       <div className='text-xl font-bold'>{name}</div>
-      <div className='text-lg mt-2'><p className={'font-bold inline'}>Quantity:</p> ${amt}</div>
+      <div className='text-lg mt-2'><p className={'font-bold inline'}>Quantity:</p> {quantity}</div>
       <div className='text-sm mt-2'><p className={'font-bold inline'}>Inventory:</p> {inventory}</div>
       <button className='bg-soa-mauve border-2 border-soa-purple text-white rounded-lg px-4 py-2 mt-4'>
         {ItemActions[type]}
@@ -34,13 +36,13 @@ const ItemDiv = (props: InventoryItem) => {
 
 interface InventoryFilterProps {
   filter: InventoryName | null;
-  handleFilterInventory: (inventory: InventoryName | null) => Promise<void>
+  handleFilterInventory: (inventory: InventoryName | null) => void
 }
 
 const InventoryFilter = (props: InventoryFilterProps) => {
   // eslint-disable-next-line no-unused-vars
   const {filter, handleFilterInventory} = props;
-  const filters = [InventoryName.Main, InventoryName.GiftBox];
+  const filters = [InventoryName.Main, InventoryName.Gift];
   const colours = [['bg-soa-peach', 'text-soa-dark'], ['bg-soa-accent', 'text-soa-white']]
   return (
     <div className="fixed bottom-4 right-4 bg-white border-2 border-black rounded-full p-2 shadow-lg flex space-x-2">
@@ -66,26 +68,45 @@ const InventoryFilter = (props: InventoryFilterProps) => {
   );
 }
 
-const baseItems: InventoryItem[] = [
-  {name: 'Consumable of Experience Gain', amt: 10, inventory: InventoryName.Main, type: 'Consumable'},
-  {name: 'Consumable of Experience Gain', amt: 4, inventory: InventoryName.GiftBox, type: 'Consumable'},
-  {name: 'Bow', amt: 2, inventory: InventoryName.Main, type: 'Equipment'},
-  {name: 'Filet-o-Fish', amt: 1, inventory: InventoryName.Main, type: 'Consumable'},
-];
-
-const InventoryGrid = () => {
+const InventoryGrid: React.FC = () => {
   const [filter, setFilter] = useState<InventoryName | null>(null);
-  const [items, setItems] = useState<InventoryItem[]>(baseItems);
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const pid = JSON.parse(localStorage.getItem('user')).playerid
 
-  const handleFilterInventory = async (inv: InventoryName): Promise<void> => {
+  const handleFilterInventory = (inv: InventoryName) => {
     if (!inv || inv === filter) {
-      setItems(baseItems);
       setFilter(null);
     } else {
-      setItems(baseItems.filter(item => item.inventory === inv));
       setFilter(inv);
     }
   }
+
+  // fetch inventory items on filter change
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        let resp;
+        if (!filter) {
+          resp = await axios.get(`${BE_URL}/api/inventory/${pid}`)//.then(res => res.data.items.map((item) => {
+        } else {
+          resp = await axios.get(`${BE_URL}/api/inventory/${filter}/${pid}`)//.then(res => res.data.items.map((item) => {
+        }
+        const mappedItems = resp.data.items.map((item) => {
+          return {
+            name: item.name,
+            quantity: item.quantity,
+            type: item.type,
+            inventory: item.inventory
+          }
+        });
+        setItems(mappedItems);
+      } catch (error) {
+        console.error('Error fetching inventory items:', error);
+        setItems([])
+      }
+    }
+    fetchItems();
+  }, [pid, filter]);
 
   return (
     <div className='container mx-auto p-4'>

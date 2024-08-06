@@ -1,8 +1,7 @@
 import { query } from '../services/db';
 import format from 'pg-format';
 import logger from '../utils/logger';
-
-const RELATION_NAME = 'player';
+import { PLAYER_RELATION } from '../interfaces/relations';
 
 export async function createUser(
   name: string,
@@ -11,7 +10,7 @@ export async function createUser(
 ): Promise<any | null> {
   const sql = format(
     'INSERT INTO %I (username, email, password, elo, totalXP) VALUES (%L, %L, %L, %L, %L) RETURNING playerID;',
-    RELATION_NAME,
+    PLAYER_RELATION,
     name,
     email,
     password,
@@ -36,7 +35,7 @@ export async function createUser(
 export async function getUserByID(playerID: number): Promise<any> {
   const sql = format(
     'SELECT * FROM %I WHERE playerID = %L;',
-    RELATION_NAME,
+    PLAYER_RELATION,
     playerID,
   );
   const rsp = await query(sql);
@@ -46,7 +45,7 @@ export async function getUserByID(playerID: number): Promise<any> {
 export async function getUserByNameAndPassword(username: string, password: string): Promise<any> {
   const sql = format(
     'SELECT * FROM %I WHERE username = %L AND password = %L;',
-    RELATION_NAME,
+    PLAYER_RELATION,
     username,
     password
   );
@@ -57,7 +56,7 @@ export async function getUserByNameAndPassword(username: string, password: strin
 export async function getUserByEmailAndPassword(email: string, password: string): Promise<any> {
   const sql = format(
     'SELECT * FROM %I WHERE email = %L AND password = %L;',
-    RELATION_NAME,
+    PLAYER_RELATION,
     email,
     password
   );
@@ -101,7 +100,7 @@ export async function updateUserByID(
 
   const sql = format(
     'UPDATE %I SET %s WHERE playerID = %L;',
-    RELATION_NAME,
+    PLAYER_RELATION,
     setClause,
     playerID,
   );
@@ -118,7 +117,7 @@ export async function updateUserByID(
 export async function deleteUserByID(playerID: number): Promise<boolean> {
   const sql = format(
     'DELETE FROM %I WHERE playerID = %L;',
-    RELATION_NAME,
+    PLAYER_RELATION,
     playerID,
   );
 

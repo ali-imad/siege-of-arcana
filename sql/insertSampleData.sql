@@ -4,7 +4,7 @@ INSERT INTO Player (playerID, username, email, password, elo, totalXP) VALUES
 
 -- Insert regular players
 INSERT INTO Player (username, email, password, elo, totalXP) VALUES
-('Ali', 'ali@foo.com', 'password1234567890', 1000, 12000),
+('Ali', 'ali@foo.com', 'password', 1000, 12000),
 ('Sharjeel', 'sharjeel@foo.com', 'password1234567890', 800, 2000),
 ('Zaid', 'zaid@foo.com', 'qwerty', 700, 7000),
 ('Steve', 'steve@foo.com', 'askldfjdsl', 1200, 4000),
@@ -116,22 +116,9 @@ INSERT INTO MatchStats (matchID, playerID, xpGain, kills, deaths, assists, outco
 SELECT matchID, playerID, xpGain, kills, deaths, assists, outcome
 FROM MatchStatsTemp;
 
--- Update Match table with statsID references
-UPDATE Match m
-SET 
-    statsID1 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 0),
-    statsID2 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 1),
-    statsID3 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 2),
-    statsID4 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 3),
-    statsID5 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 4),
-    statsID6 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 5),
-    statsID7 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 6),
-    statsID8 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 7),
-    statsID9 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 8),
-    statsID10 = (SELECT statsID FROM MatchStats ms WHERE ms.matchID = m.matchID ORDER BY statsID LIMIT 1 OFFSET 9);
-
 -- Clear the staging table
 DELETE FROM MatchStatsTemp;
+
 -- Insert match rewards
 INSERT INTO MatchReward (efficacy, outcome, xpGained) VALUES
 (0.8, 'Win', 500),
@@ -391,20 +378,20 @@ INSERT INTO SaleAmount (itemID, shopID, cost, quantity) VALUES
 -- Insert transactions
 INSERT INTO Transaction (playerID, invID, shopID, itemID, balanceID, cost) VALUES
 -- Player 1
-(2, 1, 1, 1, 1, 50),  -- 5 Health Potions
-(2, 1, 1, 5, 2, 30),  -- 2 Potions of Experience Gain
-(2, 1, 1, 3, 3, 500), -- 1 Bow
+(1, 1, 1, 1, 1, 50),  -- 5 Health Potions
+(1, 1, 1, 5, 2, 30),  -- 2 Potions of Experience Gain
+(1, 1, 1, 3, 3, 500), -- 1 Bow
 -- Player 2
-(3, 1, 1, 2, 4, 15),  -- 3 Strength Potions
-(3, 1, 1, 6, 5, 150), -- 1 Iron Sword
-(3, 1, 1, 3, 6, 500), -- 1 Bow
+(2, 1, 1, 2, 4, 15),  -- 3 Strength Potions
+(2, 1, 1, 6, 5, 150), -- 1 Iron Sword
+(2, 1, 1, 3, 6, 500), -- 1 Bow
 -- Player 3
-(4, 1, 1, 5, 7, 30),  -- 1 Potions of Experience Gain
-(4, 1, 1, 7, 8, 100), -- 1 Leather Armor
+(3, 1, 1, 5, 7, 30),  -- 1 Potions of Experience Gain
+(3, 1, 1, 7, 8, 100), -- 1 Leather Armor
 -- Player 4
-(5, 1, 1, 4, 9, 30),  -- 1 Magic Wand
-(5, 1, 1, 8, 10, 200),-- 1 Golden Armor
+(4, 1, 1, 4, 9, 30),  -- 1 Magic Wand
+(4, 1, 1, 8, 10, 200),-- 1 Golden Armor
 -- Player 5
-(6, 1, 1, 10, 11, 200),-- 2 Ancient Scrolls
-(6, 1, 1, 5, 12, 30);  -- 2 Potions of Experience Gain
+(5, 1, 1, 10, 11, 200),-- 2 Ancient Scrolls
+(5, 1, 1, 5, 12, 30);  -- 2 Potions of Experience Gain
 

@@ -41,6 +41,16 @@ export async function query(q: string): Promise<QueryResult> {
   }
 }
 
+export async function queryTx(qs: string[]): Promise<QueryResult> {
+  const queryText = qs.join('\n');
+  const fullQuery = `
+  BEGIN;
+  ${queryText}
+  COMMIT;
+  `;
+  return query(fullQuery);
+}
+
 export function queryIsEmpty(res: QueryResult): boolean {
   return res.rowCount === 0;
 }

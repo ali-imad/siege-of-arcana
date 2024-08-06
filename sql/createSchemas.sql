@@ -127,12 +127,12 @@ CREATE TABLE Inventory (
     FOREIGN KEY (playerID) REFERENCES Player(playerID)
 );
 
--- Create the InventoryItem table
+-- Create the InventoryItem table (weak entity)
 CREATE TABLE InventoryItem (
-    invItemID SERIAL PRIMARY KEY,
     invID INTEGER NOT NULL,
     itemID INTEGER NOT NULL,
     quantity INTEGER,
+    PRIMARY KEY (invID, itemID),
     FOREIGN KEY (invID) REFERENCES Inventory(invID),
     FOREIGN KEY (itemID) REFERENCES Item(itemID)
 );

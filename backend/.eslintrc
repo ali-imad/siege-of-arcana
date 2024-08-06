@@ -23,7 +23,8 @@
     "import/extensions": 0,
     "@typescript-eslint/no-redeclare": 0,
     "@typescript-eslint/dot-notation": 0,
-    "import/no-extraneous-dependencies": 0
+    "import/no-extraneous-dependencies": 0,
+    "@typescript-eslint/indent": "warn"
   },
   "settings": {
     "import/parsers": {
