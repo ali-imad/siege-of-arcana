@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export const getUser = async (username, password) => {
@@ -17,7 +19,6 @@ export const getUser = async (username, password) => {
 const LoginForm = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     
     const getEmail = async (email, password) => {
@@ -45,14 +46,28 @@ const LoginForm = (props) => {
                 const { username: uname, password: upass } = user;
                 if (uname === username && upass === password) {
                     console.log('Login successful with username');
-                    setErrorMessage('Successful login.');
+                    
+                    toast.success('Successful Login!', {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                      })
+
                     localStorage.setItem('user', JSON.stringify(user));
                     props.onLogin();
                     navigate('/profile');
                     return;
                 } else {
                     console.log('Incorrect password');
-                    setErrorMessage('Incorrect Password. Please try again.');
+                    toast.error('Incorrect Password. Please try again.', {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                      })
                     return;
                 }
             }
@@ -68,6 +83,14 @@ const LoginForm = (props) => {
                 if (uemail === username && upass === password) {
                     console.log('Login successful with email');
 
+                    toast.success('Successful Login!', {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                      })
+
                     // Store user information in local storage
                     localStorage.setItem('user', JSON.stringify(emailUser));
 
@@ -76,13 +99,28 @@ const LoginForm = (props) => {
                     return;
                 } else {
                     console.log('Incorrect password');
-                    setErrorMessage('Incorrect Password. Please try again.');
+                    toast.error('Incorrect Password. Please try again.', {
+                        position: 'top-right',
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                      })
+
                     return;
                 }
             }
 
             console.log('Username or email not found. Please try again.');
-            setErrorMessage('Username or email not found. Please try again.');
+
+            toast.error('Username or email not found. Please try again.', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+              })
+
         } catch (error) {
             console.error('Error', error);
         }
@@ -130,7 +168,6 @@ const LoginForm = (props) => {
                 </button>
             </form>
             <br />
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
             <br />
             <Link
                 to="/auth"
@@ -141,6 +178,7 @@ const LoginForm = (props) => {
                     Go Back{' '}
                 </button>
             </Link>
+            <ToastContainer/>
         </div>
     );
 };

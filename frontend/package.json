@@ -17,7 +17,8 @@
     "react-dom": "^18.3.1",
     "react-dropdown-select": "^4.11.3",
     "react-router-dom": "^6.25.1",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "toastify": "^2.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

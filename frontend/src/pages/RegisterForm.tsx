@@ -1,13 +1,14 @@
 import {useState} from "react";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterForm = () => {
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const registerUser = async (e: string, u: string, p: string) => {
@@ -49,30 +50,61 @@ const RegisterForm = () => {
           console.log("Starting registration process...");
 
           if (!isValidEmail(email)) {
-              setErrorMessage("Invalid email format.");
+            toast.error("Invalid email format.", {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
+
               return;
           }
 
           if (!isValidUsername(username)) {
-              setErrorMessage("Username must be alphanumeric.");
+            toast.error("Username must be alphanumeric.", {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               return;
           }
 
           if (!isValidPassword(password)) {
-              setErrorMessage("Password must be at least 8 characters long.");
+            toast.error('Password must be at least 8 characters long.', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               return;
           }
 
           const response = await registerUser(email, username, password);
 
           if (response) {
-              setErrorMessage("Successful registration.");
+            toast.success('Successful Registration!', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               navigate('login');
           }
 
       } catch (error) {
           console.error('Error', error);
-          setErrorMessage('An error occurred during the registration process. Please try again later.');
+          toast.error('An error occurred during the registration process. Please try again later.', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+          })
       }
   };
 
@@ -134,7 +166,6 @@ const RegisterForm = () => {
             </button>
           </form>
           <br></br>
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
           <br></br>
           <Link
           to='/auth'
@@ -145,6 +176,7 @@ const RegisterForm = () => {
             Go Back{' '}
           </button>
         </Link>
+        <ToastContainer/>
         </div>
       );
 }

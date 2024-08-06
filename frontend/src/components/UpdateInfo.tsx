@@ -2,6 +2,8 @@ import {useState} from "react";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUser } from '../pages/LoginForm'
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const UpdateForm = () => {
 
@@ -11,8 +13,7 @@ const UpdateForm = () => {
     const [username, setUsername] = useState(userJSON.username);
     const [email, setEmail] = useState(userJSON.email);
     const [password, setPassword] = useState(userJSON.password);
-    const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate();
+
 
     const updateUser = async (id: string, e: string, u: string, p: string) => {
         const url = `http://localhost:5151/api/user/update/${id}`;
@@ -53,24 +54,48 @@ const UpdateForm = () => {
           console.log("Starting registration process...");
 
           if (!isValidEmail(email)) {
-              setErrorMessage("Invalid email format.");
+            toast.error('Invalid email format', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               return;
           }
 
           if (!isValidUsername(username)) {
-              setErrorMessage("Username must be alphanumeric.");
+            toast.error('Username must be alphanumeric', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               return;
           }
 
           if (!isValidPassword(password)) {
-              setErrorMessage("Password must be at least 8 characters long.");
+            toast.error('Password must be atleast 8 characters long', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               return;
           }
 
           const response = await updateUser(userJSON.playerid, email, username, password);
 
           if (response) {
-              setErrorMessage("Successful registration.");
+            toast.success('Successful Update!', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+            })
               
               // Retrieve the updated user information
               const response = await getUser(username, password);
@@ -83,7 +108,13 @@ const UpdateForm = () => {
 
       } catch (error) {
           console.error('Error', error);
-          setErrorMessage('An error occurred during the registration process. Please try again later.');
+          toast.error('An error occurred during the registration process. Please try again later.', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+          })
       }
   };
 
@@ -145,7 +176,6 @@ return (
           Update
         </button>
       </form>
-      {errorMessage && <div className="mt-4 text-red-500 text-sm text-center">{errorMessage}</div>}
     </div>
   </div>
 )};
@@ -223,6 +253,7 @@ const UpdateInfo = () => {
           onClose={() => setShowEditProfile(false)}
         />
       )}
+      <ToastContainer/>
     </div>
   );
 };

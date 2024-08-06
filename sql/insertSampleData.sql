@@ -42,6 +42,7 @@ INSERT INTO PlayerLevel (xp, level) VALUES
 (5500, 5),
 (6000, 6),
 (7000, 7),
+(12000, 12),
 (999999, 100);
 
 -- Insert matches
@@ -51,7 +52,8 @@ INSERT INTO Match (mode, map, datePlayed) VALUES
 ('5v5', 'Map3', '2024-04-03 16:00:00'),
 ('5v5', 'Map1', '2024-05-16 17:00:00'),
 ('5v5', 'Map3', '2024-08-01 18:00:00'),
-('3v3', 'Map1', '2023-03-02 14:00:00');
+('3v3', 'Map1', '2023-03-02 14:00:00'),
+('1v1', 'Map1', '2023-03-02 14:00:00');
 
 -- Insert match stats staging table
 INSERT INTO MatchStatsTemp (matchID, playerID, xpGain, kills, deaths, assists, outcome) VALUES

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Select from "react-dropdown-select"
 import axios from 'axios';
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import UpdateInfo from '../components/UpdateInfo';
 
@@ -16,7 +18,6 @@ const Profile = () => {
   const [smurfWR, setSmurfWR] = useState(null);
   const [profileSelect, setProfileSelect] = useState('');
   const [outcome, setOutcome] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('')
   const [showOutcomes, setShowOutcomes] = useState(false);
   const [options, setOptions] = useState([]);
   const [analysis, setAnalysis] = useState([])
@@ -159,8 +160,14 @@ const handleOutcomes = async () => {
         setOutcome(outcomeData)
         setShowOutcomes(true);
       } else {
-        console.log("no outcome selected yet")
-        setErrorMessage('please select an outcome from the dropdown')
+        console.log("please select an outcome from the dropdown")
+        toast.error('Error purchasing item', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+        })
         setShowOutcomes(false);
       }
     } catch (error) {
@@ -229,7 +236,6 @@ const SelectComponent = () => {
     setProfileSelect(selectedOption[0].label);
     setSelectedOption(selectedOption[0].label);
     console.log(selectedOption[0].label)
-    setErrorMessage('')
     setOutcome(null);
     setShowOutcomes(false);
     
@@ -248,7 +254,6 @@ const SelectComponent = () => {
       onClick={() => handleOutcomes()}>Search {profileSelect}</Button>
       <br></br>
       {showOutcomes && displayOutcomes()}
-      {errorMessage}
     </div>
   );
 };
@@ -309,15 +314,16 @@ const AnalysisTable = ({ analysis }) => {
       <div>{userJSON.username}</div>
       {rank && <div>Rank: {rank}</div>}
       {level && <div>Level: {level}</div>}
-      <ProgressBar
+      {/* <ProgressBar
       value={userJSON.totalxp}
       max={level ? (level * 1000) + 1000 : 0}
-      label={'level progress:'}/>
+      label={'level progress:'}/> */}
       <UpdateInfo></UpdateInfo>
       <SmurfLabel></SmurfLabel>
       <button className="bg-soa-accent text-white p-1 px-2 rounded-lg" onClick={() => handlePerformance()}>See Performance Analysis</button>
       <AnalysisTable analysis={analysis}></AnalysisTable>
       <SelectComponent></SelectComponent>
+      <ToastContainer/>
       </div>
   );
 };
