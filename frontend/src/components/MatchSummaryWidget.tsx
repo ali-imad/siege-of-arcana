@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import axios from 'axios';
 
-//TODO: Get this to properly route from the properPlayer.
+
 const getPlayerMatches = async (playerID: number): Promise<Match[]> => {
   try {
     const response = await axios.get(`http://localhost:5151/api/match/${playerID}`);
@@ -15,6 +15,21 @@ const getPlayerMatches = async (playerID: number): Promise<Match[]> => {
     }
   } catch (error) {
     console.error('Error fetching player matches:', error);
+    return [];
+  }
+};
+
+const getUnplayedGameModes = async (playerID: number): Promise<string[]> => {
+  try {
+    const response = await axios.get(`http://localhost:5151/api/match/unplayedmode/${playerID}`);
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else {
+      console.error('Unexpected response data format:', response.data);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching unplayed game modes:', error);
     return [];
   }
 };
@@ -38,19 +53,37 @@ interface MatchSummaryWidgetCols {
 const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ playerID }) => {
   const navigate = useNavigate();
   const [matches, setMatches] = useState<Match[]>([]);
+  const [unplayedModes, setUnplayedModes] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchMatches = async () => {
+    const fetchMatchesAndModes = async () => {
       const playerMatches = await getPlayerMatches(playerID);
       setMatches(playerMatches);
+
+      const modes = await getUnplayedGameModes(playerID);
+      setUnplayedModes(modes);
     };
 
-    fetchMatches();
+    if (playerID) {
+      fetchMatchesAndModes();
+    }
   }, [playerID]);
 
   return (
     <div className="bg-white border-2 border-gray-200 rounded-lg shadow-md fixed right-0 top-16 w-1/2 h-full overflow-y-auto p-4">
       <div className="text-2xl font-bold mb-4">Match Summary</div>
+
+      {unplayedModes.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold">Unplayed Game Modes</h2>
+          <ul className="list-disc pl-5">
+            {unplayedModes.map((mode, index) => (
+              <li key={index} className="text-gray-700">{mode}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="flex-1 overflow-y-auto pb-8">
         {matches.map((match) => (
           <div
