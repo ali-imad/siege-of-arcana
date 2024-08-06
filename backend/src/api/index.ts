@@ -2,6 +2,7 @@ import express from 'express';
 import userRouter from './user';
 import matchRouter from './match';
 const router = express.Router();
+import matchRouter from './match';
 
 router.get('/', (req, res) => {
   res.json({

@@ -4,7 +4,7 @@ INSERT INTO Player (playerID, username, email, password, elo, totalXP) VALUES
 
 -- Insert regular players
 INSERT INTO Player (username, email, password, elo, totalXP) VALUES
-('Ali', 'ali@foo.com', 'password1234567890', 1000, 0),
+('Ali', 'ali@foo.com', 'password1234567890', 1000, 12000),
 ('Sharjeel', 'sharjeel@foo.com', 'password1234567890', 800, 2000),
 ('Zaid', 'zaid@foo.com', 'qwerty', 700, 7000),
 ('Steve', 'steve@foo.com', 'askldfjdsl', 1200, 4000),
@@ -45,74 +45,74 @@ INSERT INTO PlayerLevel (xp, level) VALUES
 (999999, 100);
 
 -- Insert matches
-INSERT INTO Match (matchID, mode, map) VALUES
-(1, '5v5', 'Map1'),
-(2, '5v5', 'Map2'),
-(3, '5v5', 'Map3'),
-(4, '5v5', 'Map1'),
-(5, '5v5', 'Map3');
+INSERT INTO Match (mode, map, datePlayed) VALUES
+('5v5', 'Map1', '2023-03-02 14:00:00'),
+('5v5', 'Map2', '2023-08-22 15:00:00'),
+('5v5', 'Map3', '2024-04-03 16:00:00'),
+('5v5', 'Map1', '2024-05-16 17:00:00'),
+('5v5', 'Map3', '2024-08-01 18:00:00');
 
--- Insert match statistics into staging table
-INSERT INTO MatchStatsTemp (matchID, playerID, kills, deaths, assists, outcome) VALUES
+-- Insert match stats staging table
+INSERT INTO MatchStatsTemp (matchID, playerID, xpGain, kills, deaths, assists, outcome) VALUES
 -- Match 1
-(1, 1, 15, 10, 5, 'Win'),
-(1, 2, 12, 8, 3, 'Win'),
-(1, 3, 10, 12, 6, 'Win'),
-(1, 4, 18, 7, 4, 'Win'),
-(1, 5, 8, 15, 7, 'Win'),
-(1, 6, 11, 13, 2, 'Loss'),
-(1, 7, 9, 14, 5, 'Loss'),
-(1, 8, 13, 11, 3, 'Loss'),
-(1, 9, 7, 16, 8, 'Loss'),
-(1, 10, 10, 12, 4, 'Loss'),
+(1, 1, 100, 15, 10, 5, 'Win'),
+(1, 2, 120, 12, 8, 3, 'Win'),
+(1, 3, 130, 10, 12, 6, 'Win'),
+(1, 4, 140, 18, 7, 4, 'Win'),
+(1, 5, 150, 8, 15, 7, 'Win'),
+(1, 6, 80, 11, 13, 2, 'Loss'),
+(1, 7, 90, 9, 14, 5, 'Loss'),
+(1, 8, 100, 13, 11, 3, 'Loss'),
+(1, 9, 70, 7, 16, 8, 'Loss'),
+(1, 10, 110, 10, 12, 4, 'Loss'),
 -- Match 2
-(2, 1, 20, 8, 3, 'Win'),
-(2, 3, 16, 10, 5, 'Win'),
-(2, 5, 14, 12, 7, 'Win'),
-(2, 7, 18, 9, 4, 'Win'),
-(2, 9, 12, 11, 6, 'Win'),
-(2, 2, 10, 15, 2, 'Loss'),
-(2, 4, 9, 17, 3, 'Loss'),
-(2, 6, 11, 14, 5, 'Loss'),
-(2, 8, 13, 13, 4, 'Loss'),
-(2, 10, 8, 16, 7, 'Loss'),
+(2, 1, 150, 20, 8, 3, 'Win'),
+(2, 3, 160, 16, 10, 5, 'Win'),
+(2, 5, 140, 14, 12, 7, 'Win'),
+(2, 7, 130, 18, 9, 4, 'Win'),
+(2, 9, 120, 12, 11, 6, 'Win'),
+(2, 2, 90, 10, 15, 2, 'Loss'),
+(2, 4, 80, 9, 17, 3, 'Loss'),
+(2, 6, 70, 11, 14, 5, 'Loss'),
+(2, 8, 60, 13, 13, 4, 'Loss'),
+(2, 10, 50, 8, 16, 7, 'Loss'),
 -- Match 3
-(3, 1, 10, 14, 3, 'Win'),
-(3, 4, 15, 11, 6, 'Win'),
-(3, 6, 13, 10, 5, 'Win'),
-(3, 8, 19, 8, 3, 'Win'),
-(3, 10, 11, 12, 7, 'Win'),
-(3, 2, 17, 9, 4, 'Loss'),
-(3, 3, 9, 15, 4, 'Loss'),
-(3, 5, 12, 13, 5, 'Loss'),
-(3, 7, 8, 16, 6, 'Loss'),
-(3, 9, 11, 14, 4, 'Loss'),
+(3, 2, 170, 17, 9, 4, 'Win'),
+(3, 4, 160, 15, 11, 6, 'Win'),
+(3, 6, 150, 13, 10, 5, 'Win'),
+(3, 8, 180, 19, 8, 3, 'Win'),
+(3, 10, 140, 11, 12, 7, 'Win'),
+(3, 1, 75, 10, 14, 3, 'Loss'),
+(3, 3, 65, 9, 15, 4, 'Loss'),
+(3, 5, 85, 12, 13, 5, 'Loss'),
+(3, 7, 55, 8, 16, 6, 'Loss'),
+(3, 9, 45, 11, 14, 4, 'Loss'),
 -- Match 4
-(4, 1, 16, 11, 5, 'Win'),
-(4, 4, 18, 9, 4, 'Win'),
-(4, 7, 14, 12, 6, 'Win'),
-(4, 8, 20, 7, 3, 'Win'),
-(4, 9, 15, 10, 5, 'Win'),
-(4, 2, 11, 15, 3, 'Loss'),
-(4, 3, 9, 17, 4, 'Loss'),
-(4, 5, 12, 14, 5, 'Loss'),
-(4, 6, 10, 16, 6, 'Loss'),
-(4, 10, 8, 18, 7, 'Loss'),
+(4, 1, 160, 16, 11, 5, 'Win'),
+(4, 4, 150, 18, 9, 4, 'Win'),
+(4, 7, 140, 14, 12, 6, 'Win'),
+(4, 8, 130, 20, 7, 3, 'Win'),
+(4, 9, 120, 15, 10, 5, 'Win'),
+(4, 2, 90, 11, 15, 3, 'Loss'),
+(4, 3, 80, 9, 17, 4, 'Loss'),
+(4, 5, 70, 12, 14, 5, 'Loss'),
+(4, 6, 60, 10, 16, 6, 'Loss'),
+(4, 10, 50, 8, 18, 7, 'Loss'),
 -- Match 5
-(5, 3, 19, 8, 4, 'Win'),
-(5, 5, 17, 10, 5, 'Win'),
-(5, 6, 15, 11, 6, 'Win'),
-(5, 9, 21, 7, 3, 'Win'),
-(5, 10, 16, 9, 5, 'Win'),
-(5, 1, 12, 14, 3, 'Loss'),
-(5, 2, 10, 15, 4, 'Loss'),
-(5, 4, 11, 13, 5, 'Loss'),
-(5, 7, 9, 16, 6, 'Loss'),
-(5, 8, 13, 12, 4, 'Loss');
+(5, 3, 190, 19, 8, 4, 'Win'),
+(5, 5, 180, 17, 10, 5, 'Win'),
+(5, 6, 170, 15, 11, 6, 'Win'),
+(5, 9, 200, 21, 7, 3, 'Win'),
+(5, 10, 160, 16, 9, 5, 'Win'),
+(5, 1, 75, 12, 14, 3, 'Loss'),
+(5, 2, 65, 10, 15, 4, 'Loss'),
+(5, 4, 85, 11, 13, 5, 'Loss'),
+(5, 7, 55, 9, 16, 6, 'Loss'),
+(5, 8, 45, 13, 12, 4, 'Loss');
 
 -- Move data from staging table to MatchStats
-INSERT INTO MatchStats (matchID, playerID, kills, deaths, assists, outcome)
-SELECT matchID, playerID, kills, deaths, assists, outcome
+INSERT INTO MatchStats (matchID, playerID, xpGain, kills, deaths, assists, outcome)
+SELECT matchID, playerID, xpGain, kills, deaths, assists, outcome
 FROM MatchStatsTemp;
 
 -- Update Match table with statsID references
