@@ -46,11 +46,11 @@ interface Match {
   assists: string;
 }
 
-interface MatchSummaryWidgetCols {
+interface MatchSummaryWidgetProps {
   playerID: number | null;
 }
 
-const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ playerID }) => {
+const MatchSummaryWidget: React.FC<MatchSummaryWidgetProps> = ({ playerID }) => {
   const navigate = useNavigate();
   const [matches, setMatches] = useState<Match[]>([]);
   const [unplayedModes, setUnplayedModes] = useState<string[]>([]);

@@ -11,6 +11,7 @@ import {
   getUserRank,
   getUserLevel,
   getPlayerPerformanceAnalysis,
+  getUserByName,
 } from '../controllers/user';
 import logger from '../utils/logger';
 
@@ -24,14 +25,14 @@ router.post('/create', async (req, res) => {
     return;
   }
   const response = await createUser(name, email, password);
-  logger.debug(JSON.stringify(response))
-  const playerID = response.playerid
+  logger.debug(JSON.stringify(response));
+  const playerID = response.playerid;
   if (playerID === null) {
     logger.error('Failed to create user');
     res.status(500).json({ error: 'Failed to create user' });
     return;
   }
-  logger.debug(`player account created with playerid: ${playerID}`)
+  logger.debug(`player account created with playerid: ${playerID}`);
   res.json({ playerID });
 });
 
@@ -52,6 +53,19 @@ router.get('/:playerID', async (req, res) => {
   }
 });
 
+router.get('/name/:name', async (req, res) => {
+  const { name } = req.params;
+  const user = await getUserByName(name);
+  if (!user) {
+    logger.error('Failed to get user');
+
+    res.status(500).json({ error: 'Failed to get user' });
+    return;
+  }
+
+  res.json(user);
+});
+
 // get player performance analytics
 router.get('/performance/:playerID', async (req, res) => {
   const { playerID } = req.params;
@@ -69,10 +83,9 @@ router.get('/performance/:playerID', async (req, res) => {
   }
 
   res.json(analysis);
-
 });
 
-  // get user profile row
+// get user profile row
 router.get('/name/:elo', async (req, res) => {
   const { elo } = req.params;
   const eloInt = parseInt(elo);
@@ -106,8 +119,8 @@ router.get('/profile/:totalXP', async (req, res) => {
 // user log in
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  
-  const user = await getUserByNameAndPassword(username, password)
+
+  const user = await getUserByNameAndPassword(username, password);
   if (user) {
     logger.http(`200 POST /api/user/login`);
     res.json({ user });
@@ -120,8 +133,8 @@ router.post('/login', async (req, res) => {
 // user register
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
-  
-  const user = await getUserByEmailAndPassword(email, password)
+
+  const user = await getUserByEmailAndPassword(email, password);
   if (user) {
     logger.http(`200 POST /api/user/login`);
     res.json({ user });
@@ -131,13 +144,13 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// update user profile 
+// update user profile
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params;
   const pid = parseInt(id);
   const { email, username, password } = req.body;
-  
-  const updatedUser = await updateUserByID(pid, {email, username, password});
+
+  const updatedUser = await updateUserByID(pid, { email, username, password });
   if (updatedUser) {
     logger.http(`200 PUT /api/user/update/${id}`);
     res.json({ user: updatedUser });

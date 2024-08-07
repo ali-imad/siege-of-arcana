@@ -8,10 +8,11 @@ import UpdateInfo from '../components/UpdateInfo';
 
 import MatchSummaryWidget from "../components/MatchSummaryWidget";
 import {Button} from 'react-bootstrap';
+import {useParams} from "react-router-dom";
 
 const Profile = () => {
-  const user = localStorage.getItem('user');
-  const userJSON = JSON.parse(user);
+  const { name } = useParams();
+  const [userObj, setUserObj] = useState(JSON.parse(localStorage.getItem('user')));
   const [rank, setRank] = useState(null);
   const [level, setLevel] = useState(null);
   const [smurf, setSmurf] = useState(null);
@@ -21,6 +22,23 @@ const Profile = () => {
   const [showOutcomes, setShowOutcomes] = useState(false);
   const [options, setOptions] = useState([]);
   const [analysis, setAnalysis] = useState([])
+
+  useEffect(() => {
+    if (name) {
+      const getUserObj = async (n) => {
+        const url = `http://localhost:5151/api/user/name/${n}`;
+        try {
+          const response = await axios.get(url);
+          setUserObj(response.data);
+          console.log(response.data)
+        } catch (error) {
+          console.error('Error fetching user:', error);
+          throw error;
+        }
+      }
+      getUserObj(name);
+    }
+  }, []);
 
 
   const getRank = async (elo) => {
@@ -92,7 +110,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchRank = async () => {
       try {
-        const rankData = await getRank(userJSON.elo);
+        const rankData = await getRank(userObj.elo);
         setRank(rankData);
       } catch (error) {
         console.error('Error setting rank:', error);
@@ -101,7 +119,7 @@ const Profile = () => {
 
     const fetchLevel = async () => {
       try {
-        const levelData = await getLevel(userJSON.totalxp);
+        const levelData = await getLevel(userObj.totalxp);
         setLevel(levelData);
       } catch (error) {
         console.error('Error setting level:', error);
@@ -110,7 +128,7 @@ const Profile = () => {
 
     const fetchSmurf = async () => {
       try {
-        const smurfData = await getSmurf(userJSON.playerid);
+        const smurfData = await getSmurf(userObj.playerid);
         setSmurf(smurfData.isSmurf);
         setSmurfWR(smurfData.winRatio)
       } catch (error) {
@@ -122,7 +140,7 @@ const Profile = () => {
     fetchRank();
     fetchLevel();
 
-  }, [userJSON.elo, userJSON.totalxp, userJSON.playerid]);
+  }, [userObj.elo, userObj.totalxp, userObj.playerid]);
 
 
   const ProgressBar = ({value, max, label}) => {
@@ -148,12 +166,12 @@ const Profile = () => {
 
     try {
       if (profileSelect === 'All Outcomes') {
-        const outcomeData = await getTotalOutcomes(userJSON.playerid);
+        const outcomeData = await getTotalOutcomes(userObj.playerid);
         console.log(outcomeData);
         setOutcome(outcomeData)
         setShowOutcomes(true);
       } else if (options.find(o => profileSelect === o.label)) {
-        const outcomeData = await getCertainOutcomes(userJSON.playerid, profileSelect);
+        const outcomeData = await getCertainOutcomes(userObj.playerid, profileSelect);
         console.log(outcomeData);
         setOutcome(outcomeData)
         setShowOutcomes(true);
@@ -212,7 +230,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const optionData = await getTotalOutcomes(userJSON.playerid);
+        const optionData = await getTotalOutcomes(userObj.playerid);
 
         const transformedOptions = optionData.map((option, index) => ({
           value: index + 1,
@@ -229,7 +247,7 @@ const Profile = () => {
     };
 
     fetchOptions();
-  }, [userJSON.playerid]);
+  }, [userObj.playerid]);
 
   const OutcomesComponent  = () => {
 
@@ -272,7 +290,7 @@ const Profile = () => {
   }
 
   const handlePerformance = async () => {
-    const analysisData = await getPerformanceAnalysis(userJSON.playerid);
+    const analysisData = await getPerformanceAnalysis(userObj.playerid);
     setAnalysis(analysisData)
     console.log(analysisData)
   }
@@ -317,11 +335,11 @@ const Profile = () => {
         <div className={'flex space-x-4 items-center justify-between'}>
           <div className={'flex flex-col w-1/3'}>
             <div className='text-4xl font-bold'>Profile</div>
-            <div>{userJSON.username}</div>
+            <div>{userObj.username}</div>
             {rank && <div>Rank: {rank}</div>}
             {level && <div>Level: {level}</div>}
             {/* <ProgressBar
-      value={userJSON.totalxp}
+      value={userObj.totalxp}
       max={level ? (level * 1000) + 1000 : 0}
       label={'level progress:'}/> */}
             <UpdateInfo/>
@@ -336,7 +354,7 @@ const Profile = () => {
         <AnalysisTable analysis={analysis}/>
         <ToastContainer/>
       </div>
-      <MatchSummaryWidget playerID={JSON.parse(localStorage.getItem('user')).playerid}/>
+      <MatchSummaryWidget playerID={userObj.playerid}/>
     </div>
   );
 };

@@ -42,33 +42,46 @@ export async function getUserByID(playerID: number): Promise<any> {
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
-export async function getUserByNameAndPassword(username: string, password: string): Promise<any> {
+export async function getUserByName(username: string): Promise<any> {
   const sql = format(
-    'SELECT * FROM %I WHERE username = %L AND password = %L;',
+    'SELECT * FROM %I WHERE username = %L;',
     PLAYER_RELATION,
     username,
-    password
   );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
-export async function getUserByEmailAndPassword(email: string, password: string): Promise<any> {
+export async function getUserByNameAndPassword(
+  username: string,
+  password: string,
+): Promise<any> {
+  const sql = format(
+    'SELECT * FROM %I WHERE username = %L AND password = %L;',
+    PLAYER_RELATION,
+    username,
+    password,
+  );
+  const rsp = await query(sql);
+  return rsp.rows.length > 0 ? rsp.rows[0] : null;
+}
+
+export async function getUserByEmailAndPassword(
+  email: string,
+  password: string,
+): Promise<any> {
   const sql = format(
     'SELECT * FROM %I WHERE email = %L AND password = %L;',
     PLAYER_RELATION,
     email,
-    password
+    password,
   );
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
 export async function getUserRank(elo: number): Promise<any> {
-  const sql = format(
-    'SELECT * FROM PlayerRank WHERE elo = %L',
-     elo
-  );
+  const sql = format('SELECT * FROM PlayerRank WHERE elo = %L', elo);
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
@@ -76,14 +89,10 @@ export async function getUserRank(elo: number): Promise<any> {
 export async function getUserLevel(totalXP: number): Promise<any> {
   const remainder = totalXP % 1000;
   const earnedXP = totalXP - remainder;
-  const sql = format(
-    'SELECT * FROM PlayerLevel WHERE xp = %L',
-    earnedXP
-  );
+  const sql = format('SELECT * FROM PlayerLevel WHERE xp = %L', earnedXP);
   const rsp = await query(sql);
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
-
 
 export async function updateUserByID(
   playerID: number,
@@ -130,8 +139,11 @@ export async function deleteUserByID(playerID: number): Promise<boolean> {
   }
 }
 
-export async function getPlayerPerformanceAnalysis(playerID: number): Promise<any> {
-  const sql = format(`
+export async function getPlayerPerformanceAnalysis(
+  playerID: number,
+): Promise<any> {
+  const sql = format(
+    `
     WITH OverallAverages AS (
       SELECT 
         m.mode,
@@ -156,8 +168,9 @@ export async function getPlayerPerformanceAnalysis(playerID: number): Promise<an
     WHERE ms.playerID = %L
     GROUP BY m.mode, oa.avg_overall_kills, oa.avg_overall_deaths, oa.avg_overall_assists
     ORDER BY m.mode;
-  `, 
-  playerID);
+  `,
+    playerID,
+  );
 
   try {
     const rsp = await query(sql);
@@ -171,5 +184,4 @@ export async function getPlayerPerformanceAnalysis(playerID: number): Promise<an
     logger.error('Error executing query', err);
     return null;
   }
-  
 }
