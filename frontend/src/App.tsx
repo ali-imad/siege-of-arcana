@@ -13,7 +13,7 @@ import LoginForm from './pages/LoginForm.tsx';
 import RegisterForm from './pages/RegisterForm.tsx';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(localStorage.getItem('user') !== null);
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -51,6 +51,7 @@ function App() {
           <Route path='/shop' element={isLoggedIn ? <Shop /> : <Navigate to="/login" />} />
           <Route path='/inventory' element={isLoggedIn ? <InventoryGrid /> : <Navigate to="/login" />} />
           <Route path='/profile' element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
+          <Route path='/profile/:id' element={isLoggedIn ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/login' element={isLoggedIn ? <Navigate to="/profile" /> : <Login onLogin={handleLogin} />} />
           <Route path="/logout" element={<Home />} />
           <Route path='/match/:matchID' element={<Match />} />

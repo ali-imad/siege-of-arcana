@@ -70,7 +70,7 @@ const MatchSummaryWidget: React.FC<MatchSummaryWidgetCols> = ({ playerID }) => {
   }, [playerID]);
 
   return (
-    <div className="bg-white border-2 border-gray-200 rounded-lg shadow-md fixed right-0 top-16 w-1/2 h-full overflow-y-auto p-4">
+    <div className="mx-8 mt-4 bg-white border-2 border-gray-200 rounded-lg shadow-md w-1/2 h-full overflow-y-auto p-4">
       <div className="text-2xl font-bold mb-4">Match Summary</div>
 
       {unplayedModes.length > 0 && (
