@@ -245,16 +245,16 @@ const Profile = () => {
     };
 
     return (
-      <div className={"w-1/4 h-full overflow-y-auto flex flex-col justify-start"}>
+      <div className={"w-1/4 h-full overflow-y-auto flex flex-col"}>
         <h1 className='text-2xl font-bold text-soa-purple'>Outcomes:</h1>
         <Select
           value={selectedOption}
           onChange={handleChange}
           options={options}
         />
+        {showOutcomes && displayOutcomes()}
         <Button className="bg-soa-accent text-white p-2 px-4 rounded-lg mt-auto mb-4"
                 onClick={() => handleOutcomes()}>Search {profileSelect}</Button>
-        {showOutcomes && displayOutcomes()}
       </div>
     );
   };
@@ -262,9 +262,9 @@ const Profile = () => {
 
   const SmurfLabel = () => {
     if (smurf) {
-      return (<div className='flex flex-col w-1/2'>
+      return (<div className='flex flex-col w-1/2 h-full justify-start p-4'>
         <h1 className='text-2xl font-bold text-soa-mauve'>This player is a smurf</h1>
-        <h2 className='text-lg text-soa-dark'>Win rate: {smurfWR * 100}%</h2>
+        <h2 className='text-sm font-bold text-soa-dark'>Win rate: {smurfWR * 100}%</h2>
       </div>)
     } else {
       return <></>
@@ -314,7 +314,7 @@ const Profile = () => {
   return (
     <div className='container flex justify-between'>
       <div className='mx-8 p-4 bg-grey-100 flex flex-col justify-start'>
-        <div className={'flex space-x-4 items-center justify-start'}>
+        <div className={'flex space-x-4 items-center justify-between'}>
           <div className={'flex flex-col w-1/3'}>
             <div className='text-4xl font-bold'>Profile</div>
             <div>{userJSON.username}</div>
