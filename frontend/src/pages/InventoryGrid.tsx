@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {ItemType} from "../interfaces/ItemType.tsx";
 import axios from "axios";
+
 const BE_URL = import.meta.env.VITE_BE_ROUTE;
 
 enum InventoryName { // this name must match route name
@@ -10,7 +11,7 @@ enum InventoryName { // this name must match route name
 
 const ItemActions: Record<ItemType, string> = {
   'Consumable': 'Use',
-  'Equipment': 'Equip'
+  'Equipment': ''
 }
 
 interface InventoryItem {
@@ -22,17 +23,26 @@ interface InventoryItem {
 
 const ItemDiv = (props: InventoryItem) => {
   const {name, quantity, type, inventory} = props;
+  const action = ItemActions[type]
   return (
-    <div className='bg-white border-2 border-soa-peach rounded-lg p-4 shadow-shopListing'>
-      <div className='text-xl font-bold'>{name}</div>
-      <div className='text-lg mt-2'><p className={'font-bold inline'}>Quantity:</p> {quantity}</div>
-      <div className='text-sm mt-2'><p className={'font-bold inline'}>Inventory:</p> {inventory}</div>
-      <button className='bg-soa-mauve border-2 border-soa-purple text-white rounded-lg px-4 py-2 mt-4'>
-        {ItemActions[type]}
-      </button>
-    </div>
-  );
-};
+    <div
+      className='flex space-x-6 bg-white border-2 border-soa-peach rounded-lg p-4 shadow-shopListing justify-between'>
+      <div className='flex flex-col'>
+        <div className='text-xl font-bold'>{name}</div>
+        <div className='text-lg mt-2'><p className={'font-bold inline'}>Quantity:</p> {quantity}</div>
+        <div className='text-sm mt-2'><p className={'font-bold inline'}>Inventory:</p> {inventory}</div>
+      </div>
+      {action && <form className='flex items-center space-x-5 mx-2'>
+        <input type='number' min={1} max={99} defaultValue={1}
+               className={`border-2 border-soa-dark text-center p-2`}/>
+        <button className='bg-soa-mauve border-2 border-soa-purple text-white rounded-lg px-16 py-4'>
+          {action}
+        </button>
+      </form>
+        }
+        </div>
+        );
+      };
 
 interface InventoryFilterProps {
   filter: InventoryName | null;
@@ -53,7 +63,7 @@ const InventoryFilter = (props: InventoryFilterProps) => {
        rounded-full 
        px-4 
        py-1`}
-      onClick={() => handleFilterInventory(null)}>All Items
+              onClick={() => handleFilterInventory(null)}>All Items
       </button>
       {filters.map((f, idx) => {
         return <button className={`text-sm 
