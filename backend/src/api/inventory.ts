@@ -7,6 +7,7 @@ import {
   InventoryName,
   removeItemFromInventory,
 } from '../controllers/inventory';
+import logger from '../utils/logger';
 
 const router = express.Router();
 
@@ -77,14 +78,17 @@ router.post('/:invID/remove', async (req, res) => {
   const inv = parseInt(invID);
   const item = parseInt(itemID);
   if (!inv && inv !== 0) {
+    logger.error('Invalid inventory ID');
     res.status(400).json({ error: 'Invalid inventory ID' });
     return;
   }
   if (!item && item !== 0) {
+    logger.error('Invalid item ID');
     res.status(400).json({ error: 'Invalid item ID' });
     return;
   }
   if (!quantity) {
+    logger.error('Invalid quantity');
     res.status(400).json({ error: 'Invalid quantity' });
     return;
   }

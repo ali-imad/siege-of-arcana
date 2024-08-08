@@ -17,6 +17,8 @@ export type ItemType = 'Consumable' | 'Equipment';
 
 export interface InventoryItem {
   name: string;
+  invid: number;
+  itemid: number;
   quantity: number;
   type: ItemType;
   inventory: InventoryName;
@@ -30,6 +32,8 @@ async function rspToInvItems(sql: string) {
     logger.debug(`Got row: ${JSON.stringify(row)}`);
     retArr.push({
       name: row.title,
+      invid: row.invid,
+      itemid: row.itemid,
       quantity: row.quantity,
       type: row.category,
       inventory: row.invname,
@@ -44,7 +48,7 @@ export async function getAllItemsFromInventory(
   // from the inventory item table
   // get all titles (from item table), quantity (from inventoryitem table), category from itemcategory table and inventory name (from inventory table)
   const sql = format(
-    `SELECT i.title, ii.quantity, ic.category, inv.invname
+    `SELECT i.title, i.itemid, ii.quantity, ic.category, inv.invname, inv.invid
     FROM %I ii
     JOIN %I i ON ii.itemid = i.itemid
     JOIN %I ic ON i.title = ic.title
@@ -67,7 +71,7 @@ export async function getItemsFromInventory(
   // from the inventory item table
   // get all titles (from item table), quantity (from inventoryitem table), category from itemcategory table from main inventory items
   const sql = format(
-    `SELECT i.title, ii.quantity, ic.category, inv.invname
+    `SELECT i.title, i.itemid, ii.quantity, ic.category, inv.invname, inv.invid
     FROM %I ii
     JOIN %I i ON ii.itemid = i.itemid
     JOIN %I ic ON i.title = ic.title
@@ -139,7 +143,7 @@ export async function removeItemFromInventory(
     logger.warn(`Item with itemID ${itemID} has insufficient quantity`);
     return false;
   }
-  if (currQty > 1) {
+  if (currQty > quantity) {
     // if item exists, update quantity
     const updateSql = format(
       `UPDATE %I

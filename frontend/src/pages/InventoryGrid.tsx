@@ -16,14 +16,17 @@ const ItemActions: Record<ItemType, string> = {
 
 interface InventoryItem {
   name: string;
+  invid: number;
+  itemid: number;
   quantity: number;
   type: ItemType;
   inventory: InventoryName;
 }
 
-const ItemDiv = (props: InventoryItem) => {
-  const {name, quantity, type, inventory} = props;
+const ItemDiv = (props: { consumeItem } & InventoryItem) => {
+  const {consumeItem, name, quantity, type, inventory} = props;
   const action = ItemActions[type]
+  const [qty, setQty] = useState(1)
   return (
     <div
       className='flex space-x-6 bg-white border-2 border-soa-peach rounded-lg p-4 shadow-shopListing justify-between'>
@@ -32,17 +35,22 @@ const ItemDiv = (props: InventoryItem) => {
         <div className='text-lg mt-2'><p className={'font-bold inline'}>Quantity:</p> {quantity}</div>
         <div className='text-sm mt-2'><p className={'font-bold inline'}>Inventory:</p> {inventory}</div>
       </div>
-      {action && <form className='flex items-center space-x-5 mx-2'>
+      {action && <form className='flex items-center space-x-5 mx-2'
+                       onSubmit={(e) => {
+                         e.preventDefault();
+                         consumeItem(qty);
+                       }}>
         <input type='number' min={1} max={99} defaultValue={1}
+               onChange={(e) => setQty(parseInt(e.target.value))}
                className={`border-2 border-soa-dark text-center p-2`}/>
         <button className='bg-soa-mauve border-2 border-soa-purple text-white rounded-lg px-16 py-4'>
           {action}
         </button>
       </form>
-        }
-        </div>
-        );
-      };
+      }
+    </div>
+  );
+};
 
 interface InventoryFilterProps {
   filter: InventoryName | null;
@@ -81,6 +89,7 @@ const InventoryFilter = (props: InventoryFilterProps) => {
 const InventoryGrid: React.FC = () => {
   const [filter, setFilter] = useState<InventoryName | null>(null);
   const [items, setItems] = useState<InventoryItem[]>([]);
+  const [refresh, setRefresh] = useState(true);
   const pid = JSON.parse(localStorage.getItem('user')).playerid
 
   const handleFilterInventory = (inv: InventoryName) => {
@@ -91,8 +100,23 @@ const InventoryGrid: React.FC = () => {
     }
   }
 
+  const handleUseItem = async (invid: number, itemid: number, quantity: number) => {
+    try {
+      const req = {
+        itemID: itemid,
+        quantity: quantity
+      }
+      console.log(`Using item in inventory ${invid} with item id ${itemid} and quantity ${quantity}`)
+      await axios.post(`${BE_URL}/api/inventory/${invid}/remove`, req);
+      setRefresh(true);
+    } catch (error) {
+      console.error('Error using item:', error)
+    }
+  }
+
   // fetch inventory items on filter change
   useEffect(() => {
+    if (!refresh) return;
     const fetchItems = async () => {
       try {
         let resp;
@@ -102,21 +126,18 @@ const InventoryGrid: React.FC = () => {
           resp = await axios.get(`${BE_URL}/api/inventory/${filter}/${pid}`)//.then(res => res.data.items.map((item) => {
         }
         const mappedItems = resp.data.items.map((item) => {
-          return {
-            name: item.name,
-            quantity: item.quantity,
-            type: item.type,
-            inventory: item.inventory
-          }
+          console.log(item)
+          return item
         });
         setItems(mappedItems);
+        setRefresh(false);
       } catch (error) {
         console.error('Error fetching inventory items:', error);
         setItems([])
       }
     }
     fetchItems();
-  }, [pid, filter]);
+  }, [pid, filter, refresh]);
 
   return (
     <div className='container mx-auto p-4'>
@@ -124,7 +145,8 @@ const InventoryGrid: React.FC = () => {
       <InventoryFilter filter={filter} handleFilterInventory={handleFilterInventory}/>
       <div className='grid grid-cols-3 gap-4 mt-4'>
         {items.map(item => (
-          <ItemDiv key={item.name + item.inventory} {...item} />
+          <ItemDiv key={item.name + item.inventory}
+                   consumeItem={(qty) => handleUseItem(item.invid, item.itemid, qty)} {...item} />
         ))}
       </div>
     </div>
