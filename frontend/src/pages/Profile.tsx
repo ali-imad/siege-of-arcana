@@ -40,6 +40,26 @@ const Profile = () => {
     }
   }, []);
 
+  const handleAxiosError = (error) => {
+    if (axios.isAxiosError(error)) {
+        if (error.response) {
+            if (error.response.status === 401) {
+                toast.error('No Performance to Analyze!');
+            } else {
+                toast.error(`No Performances!`);
+            }
+        } else if (error.request) {
+            toast.error('No response received from server. Please try again.');
+        } else {
+            toast.error(`No Performance to Analyze!`);
+        }
+    } else {
+        toast.error('No Performance to Analyze!');
+    }
+    console.error('Error:', error);
+};
+
+
 
   const getRank = async (elo) => {
     const url = `http://localhost:5151/api/user/rank/${elo}`;
@@ -103,6 +123,7 @@ const Profile = () => {
       return response.data;
     } catch (error) {
       console.error('Error fetching analysis:', error);
+      handleAxiosError(error);
       throw error;
     }
   };
@@ -177,7 +198,7 @@ const Profile = () => {
         setShowOutcomes(true);
       } else {
         console.log("please select an outcome from the dropdown")
-        toast.error('Error purchasing item', {
+        toast.error('No data to show!', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: true,

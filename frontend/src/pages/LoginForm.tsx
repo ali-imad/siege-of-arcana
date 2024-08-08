@@ -5,13 +5,43 @@ import {ToastContainer, toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 
+const handleAxiosError = (error) => {
+    if (axios.isAxiosError(error)) {
+        if (error.response) {
+            if (error.response.status === 401) {
+                toast.error('Unauthorized: Invalid credentials');
+            } else {
+                toast.error(`Error: ${error.response.status} - ${error.response.data}`);
+            }
+        } else if (error.request) {
+            toast.error('No response received from server. Please try again.');
+        } else {
+            toast.error(`Error: ${error.message}`);
+        }
+    } else {
+        toast.error('An unexpected error occurred');
+    }
+    console.error('Error:', error);
+};
+
 export const getUser = async (username, password) => {
     const url = `http://localhost:5151/api/user/login`;
     try {
         const response = await axios.post(url, { username, password });
         return response.data;
     } catch (error) {
-        console.error('Error logging in:', error);
+        handleAxiosError(error);
+        throw error;
+    }
+};
+
+const getEmail = async (email, password) => {
+    const url = `http://localhost:5151/api/user/register`;
+    try {
+        const response = await axios.post(url, { email, password });
+        return response.data;
+    } catch (error) {
+        handleAxiosError(error);
         throw error;
     }
 };
@@ -20,17 +50,6 @@ const LoginForm = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    
-    const getEmail = async (email, password) => {
-        const url = `http://localhost:5151/api/user/register`;
-        try {
-            const response = await axios.post(url, { email, password });
-            return response.data;
-        } catch (error) {
-            console.error('Error logging in:', error);
-            throw error;
-        }
-    };
 
     const startLogin = async (event) => {
         event.preventDefault();
@@ -38,14 +57,22 @@ const LoginForm = (props) => {
         try {
             console.log('Starting login process...');
 
-            const response = await getUser(username, password);
-            const user = response.user;
-            console.log('User retrieved by username:', user);
+            let user;
+            try {
+                const response = await getUser(username, password);
+                user = response.user;
+                console.log('User retrieved by username:', user);
+            } catch (error) {
+                console.log('Username not found, checking by email...');
+                const emailResponse = await getEmail(username, password);
+                user = emailResponse.user;
+                console.log('User retrieved by email:', user);
+            }
 
             if (user) {
-                const { username: uname, password: upass } = user;
-                if (uname === username && upass === password) {
-                    console.log('Login successful with username');
+                const { username: uname, email: uemail, password: upass } = user;
+                if ((uname === username || uemail === username) && upass === password) {
+                    console.log('Login successful');
                     
                     toast.success('Successful Login!', {
                         position: 'top-right',
@@ -53,12 +80,11 @@ const LoginForm = (props) => {
                         hideProgressBar: true,
                         closeOnClick: true,
                         pauseOnHover: true,
-                      })
+                    });
 
                     localStorage.setItem('user', JSON.stringify(user));
                     props.onLogin();
                     navigate('/profile');
-                    return;
                 } else {
                     console.log('Incorrect password');
                     toast.error('Incorrect Password. Please try again.', {
@@ -67,60 +93,18 @@ const LoginForm = (props) => {
                         hideProgressBar: true,
                         closeOnClick: true,
                         pauseOnHover: true,
-                      })
-                    return;
+                    });
                 }
+            } else {
+                console.log('Username or email not found. Please try again.');
+                toast.error('Username or email not found. Please try again.', {
+                    position: 'top-right',
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                });
             }
-
-            console.log('Username not found, checking by email...');
-
-            const emailResponse = await getEmail(username, password);
-            const emailUser = emailResponse.user;
-            console.log('User retrieved by email:', emailUser);
-
-            if (emailUser) {
-                const { email: uemail, password: upass } = emailUser;
-                if (uemail === username && upass === password) {
-                    console.log('Login successful with email');
-
-                    toast.success('Successful Login!', {
-                        position: 'top-right',
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                      })
-
-                    // Store user information in local storage
-                    localStorage.setItem('user', JSON.stringify(emailUser));
-
-                    // Redirect to profile page
-                    navigate('/profile');
-                    return;
-                } else {
-                    console.log('Incorrect password');
-                    toast.error('Incorrect Password. Please try again.', {
-                        position: 'top-right',
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                      })
-
-                    return;
-                }
-            }
-
-            console.log('Username or email not found. Please try again.');
-
-            toast.error('Username or email not found. Please try again.', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-              })
-
         } catch (error) {
             console.error('Error', error);
         }

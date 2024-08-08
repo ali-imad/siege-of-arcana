@@ -93,7 +93,14 @@ const RegisterForm = () => {
               closeOnClick: true,
               pauseOnHover: true,
             })
-              navigate('login');
+              navigate('/profile');
+              toast.success('Successful Registration! Please Log In!', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+              })
           }
 
       } catch (error) {
