@@ -166,6 +166,7 @@ export async function buyItem(
   shopID: number,
   itemID: number,
   quantity: number,
+  iname: string,
 ): Promise<number> {
   // check if player has enough currency
   const { currname: currName, cost: unitCost } = await getShopItemCost(
@@ -200,7 +201,7 @@ export async function buyItem(
   }
 
   // get the players main inventory
-  const invID = await getInvIdFromPID(playerID, InventoryName.Main);
+  const invID = await getInvIdFromPID(playerID, iname);
   if (invID < 0) {
     logger.error(`Failed to get inventory ID for player ${playerID}`);
     return 0;

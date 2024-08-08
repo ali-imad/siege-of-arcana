@@ -90,7 +90,7 @@ export async function getItemsFromInventory(
 
 export async function getInvIdFromPID(
   pID: number,
-  invName: InventoryName,
+  invName: string,
 ): Promise<number> {
   const sql = format(
     `SELECT invid

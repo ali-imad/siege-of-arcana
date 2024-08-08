@@ -73,7 +73,9 @@ const ShopFilter = (props: ShopFilterProps) => {
 }
 
 const ShopItemDiv = (props: ShopItem) => {
+  const inventories = ['Main', 'Gift Box']
   const [qty, setQty] = useState(0);
+  const [inv, setInv] = useState(inventories[0]);
   const {name, itemid, price, currency, shop, onSubmit} = props;
   // console.log(`ShopItemDiv: ${name} ${itemid} ${price} ${currency} ${shop.name} ${shop.shopid}`)
   const handleSpinnerChange = (val) => setQty(val);
@@ -84,14 +86,25 @@ const ShopItemDiv = (props: ShopItem) => {
         <div className='text-lg font-bold'>{name}</div>
         <div className='text-sm mt-2'><p className={'font-bold inline'}>Price:</p> {price} {currency}</div>
       </div>
-      <form className={'flex items-center space-x-5 mx-2'}
-            onSubmit={(e) => onSubmit(shop.shopid, itemid, qty, e)}>
-        <input type='number' onChange={(e) => handleSpinnerChange(e.target.value)} min={1} max={99} defaultValue={1}
-               className={`border-2 border-soa-dark translate-y-2 text-center p-2`}/>
-        <button
-          className='bg-soa-accent border-2 border-soa-purple hover:font-bold hover:transition-all text-soa-white rounded-lg px-8 py-2 mt-4'>
-          Purchase
-        </button>
+      <form className={'flex flex-col space-y-2 justify-between'}
+            onSubmit={(e) => onSubmit(shop.shopid, itemid, qty, inv, e)}>
+        <div className='flex items-center space-x-5 mx-2'>
+          <input type='number' onChange={(e) => handleSpinnerChange(e.target.value)} min={1} max={99} defaultValue={1}
+                 className={`border-2 border-soa-dark translate-y-2 text-center p-2`}/>
+          <button
+            className='bg-soa-accent border-2 border-soa-purple hover:font-bold hover:transition-all text-soa-white rounded-lg px-8 py-2 mt-4'>
+            Purchase
+          </button>
+        </div>
+        <div className='flex space-x-4'>
+          {inventories.map((inv, idx) => {
+            return (<div><input type='radio' name='inventory' value={inv}
+                                                 onChange={(e) => setInv(e.target.value)}
+                                                 defaultChecked={idx === 0} className='inline'/>
+              <label htmlFor={inv} className='px-2 text-xs'>{inv}</label>
+            </div>)
+          })}
+        </div>
       </form>
     </div>
   );
@@ -347,13 +360,14 @@ const Shop = () => {
     setSearch(search);
   }
 
-  const purchaseItem = (sid, iid, qty, e) => {
+  const purchaseItem = (sid, iid, qty, iname, e) => {
     e.preventDefault();
     // get value from spinner
     const purchaseReq = {
       playerID: pid,
       shopID: sid,
       itemID: iid,
+      iname,
       quantity: qty
     }
     axios.post(`${BE_URL}/api/shop/buy`, purchaseReq).then((resp) => {

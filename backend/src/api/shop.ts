@@ -66,7 +66,7 @@ router.get('/search/:name', async (req, res) => {
 
 // buy an item from a shop
 router.post('/buy', async (req, res) => {
-  const { playerID, shopID, itemID, quantity } = req.body;
+  const { playerID, shopID, itemID, quantity, iname } = req.body;
   const pid = parseInt(playerID);
   const sid = parseInt(shopID);
   const iid = parseInt(itemID);
@@ -89,7 +89,7 @@ router.post('/buy', async (req, res) => {
   }
 
   try {
-    const success = await buyItem(pid, sid, iid, qty);
+    const success = await buyItem(pid, sid, iid, qty, iname);
     if (!success) {
       res.status(400).json({ success: false, error: 'Failed to buy item' });
       return;

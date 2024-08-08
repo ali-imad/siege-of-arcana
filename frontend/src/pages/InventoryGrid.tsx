@@ -96,8 +96,10 @@ const InventoryGrid: React.FC = () => {
   const handleFilterInventory = (inv: InventoryName) => {
     if (!inv || inv === filter) {
       setFilter(null);
+      setRefresh(true);
     } else {
       setFilter(inv);
+      setRefresh(true);
     }
   }
 
@@ -129,7 +131,7 @@ const InventoryGrid: React.FC = () => {
         if (!filter) {
           resp = await axios.get(`${BE_URL}/api/inventory/${pid}`)//.then(res => res.data.items.map((item) => {
         } else {
-          resp = await axios.get(`${BE_URL}/api/inventory/${filter}/${pid}`)//.then(res => res.data.items.map((item) => {
+          resp = await axios.get(`${BE_URL}/api/inventory/${filter.toLowerCase()}/${pid}`)//.then(res => res.data.items.map((item) => {
         }
         const mappedItems = resp.data.items.map((item) => {
           console.log(item)
