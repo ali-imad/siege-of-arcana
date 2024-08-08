@@ -12,6 +12,7 @@ import {
   getUserLevel,
   getPlayerPerformanceAnalysis,
   getUserByName,
+  addUserLevel,
 } from '../controllers/user';
 import logger from '../utils/logger';
 
@@ -101,14 +102,19 @@ router.get('/rank/:elo', async (req, res) => {
   res.json(rank.rank);
 });
 
-router.get('/profile/:totalXP', async (req, res) => {
+router.get('/xp/:totalXP', async (req, res) => {
   const { totalXP } = req.params;
   const totalXPINT = parseInt(totalXP);
 
-  const level = await getUserLevel(totalXPINT);
+  const levelExisting = await getUserLevel(totalXPINT);
+  const level = levelExisting
+    ? levelExisting.level
+    : (await addUserLevel(totalXPINT))
+      ? await getUserLevel(totalXPINT)
+      : null;
+
   if (!level) {
     logger.error('Failed to get level');
-
     res.status(500).json({ error: 'Failed to get level' });
     return;
   }

@@ -94,6 +94,24 @@ export async function getUserLevel(totalXP: number): Promise<any> {
   return rsp.rows.length > 0 ? rsp.rows[0] : null;
 }
 
+export async function addUserLevel(xp: number): Promise<boolean> {
+  const level = Math.floor(xp / 1000);
+  const sql = format(
+    'INSERT INTO %I (xp, level) VALUES (%L, %L);',
+    'playerlevel',
+    xp,
+    level,
+  );
+
+  try {
+    await query(sql);
+    return true;
+  } catch (err) {
+    logger.error('Error updating user level', err);
+    return false;
+  }
+}
+
 export async function updateUserByID(
   playerID: number,
   values: Record<string, string | number>,

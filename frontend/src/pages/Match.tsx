@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useParams, useNavigate} from "react-router-dom";
 import axios from 'axios';
 import {toast, ToastContainer} from "react-toastify";
+import {getUser} from "./LoginForm.tsx";
 
 interface Player {
   profile: string;
@@ -21,9 +22,10 @@ interface MatchView {
 
 //TODO: Get this to route back to the proper player, and when you click somewhere route to the right profile??
 const Match: React.FC = () => {
-  const { matchID } = useParams<{ matchID: string }>();
+  const {matchID} = useParams<{ matchID: string }>();
   const navigate = useNavigate();
   const [match, setMatch] = useState<MatchView | null>(null);
+  const user: any = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     const fetchMatchDetails = async () => {
@@ -42,8 +44,17 @@ const Match: React.FC = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5151/api/match/delete/${matchID}`);
-      toast.success('Match deleted successfully!', { autoClose: 1000 })
-      new Promise((resolve) => setTimeout(resolve, 2000)).then(() => { navigate(-1); })
+      toast.success('Match deleted successfully!', {autoClose: 1000})
+      const response = await axios.post(`http://localhost:5151/api/user/login`, user);
+      const updatedUser = response.data.user;
+
+      if (updatedUser) {
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+        navigate(-1);
+      })
     } catch (error) {
       toast.error('Error deleting match')
       console.error('Error deleting match:', error);
@@ -109,7 +120,7 @@ const Match: React.FC = () => {
           </div>
         ))}
       </div>
-      <ToastContainer />
+      <ToastContainer/>
     </div>
   );
 };

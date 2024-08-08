@@ -73,7 +73,7 @@ const Profile = () => {
   };
 
   const getLevel = async (totalXP) => {
-    const url = `http://localhost:5151/api/user/profile/${totalXP}`;
+    const url = `http://localhost:5151/api/user/xp/${totalXP}`;
     try {
       const response = await axios.get(url);
       return response.data;
