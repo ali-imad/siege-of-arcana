@@ -269,7 +269,7 @@ const Shop = () => {
         name: item.name,
         price: item.price,
         itemid: item.itemid,
-        currency: item.currency,
+        currency: item.currname,
         type: item.type,
         shop: item.shop
       }

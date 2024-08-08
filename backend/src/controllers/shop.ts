@@ -19,6 +19,7 @@ import { addSaleAmount, getSaleAmount } from './transaction';
 export interface ShopItem {
   name: string;
   itemid: number;
+  currname: string;
   price: number;
   category: string;
   shop: { name: string; shopid: number };
@@ -40,6 +41,7 @@ export async function rspToShopItems(sql: string) {
       name: row.title,
       itemid: row.itemid,
       price: row.cost,
+      currname: row.currname,
       category: row.category,
       shop: { name: row.shopname, shopid: row.shopid },
       rarity: row.rarity,
@@ -74,7 +76,7 @@ export async function getAllShops(): Promise<Shop[]> {
 
 export async function getAllShopItems(): Promise<ShopItem[]> {
   const sql = format(
-    `SELECT i.title, i.itemid, s.cost, ic.category, cm.rarity, cs.expiration, cs.effect, s.shopid, sh.title AS shopname
+    `SELECT i.title, i.itemid, s.currname, s.cost, ic.category, cm.rarity, cs.expiration, cs.effect, s.shopid, sh.title AS shopname
     FROM %I s
     JOIN %I i ON s.itemid = i.itemid
     JOIN %I ic ON i.title = ic.title
@@ -115,7 +117,7 @@ export async function getShopItemCost(
 
 export async function getShopItemsByShop(sID: number): Promise<ShopItem[]> {
   const sql = format(
-    `SELECT i.title, i.itemid, s.cost, ic.category, cm.rarity, cs.expiration, cs.effect, s.shopid, sh.title AS shopname
+    `SELECT i.title, i.itemid, s.currname, s.cost, ic.category, cm.rarity, cs.expiration, cs.effect, s.shopid, sh.title AS shopname
     FROM %I s
     JOIN %I i ON s.itemid = i.itemid
     JOIN %I ic ON i.title = ic.title
@@ -138,7 +140,7 @@ export async function getShopItemsByShop(sID: number): Promise<ShopItem[]> {
 // search for a shop item by name
 export async function findShopItemsByName(name: string): Promise<ShopItem[]> {
   const sql = format(
-    `SELECT i.title, i.itemid, s.cost, ic.category, cm.rarity, cs.expiration, cs.effect, s.shopid, sh.title AS shopname
+    `SELECT i.title, i.itemid, s.currname, s.cost, ic.category, cm.rarity, cs.expiration, cs.effect, s.shopid, sh.title AS shopname
     FROM %I s
     JOIN %I i ON s.itemid = i.itemid
     JOIN %I ic ON i.title = ic.title
