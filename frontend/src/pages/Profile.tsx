@@ -371,7 +371,7 @@ const Profile = () => {
             {level && <ProfileLabel title={'Level'} label={level} /> }
             <ProgressBar
               value={userObj.totalxp}
-              max={level ? (level * 1000) + 1000 : 0}
+              max={userObj.totalxp + 1000 - (userObj.totalxp % 1000)}
               label={'Level progress:'}/>
             <button className="w-full bg-soa-accent text-white p-1 px-2 rounded-lg my-4"
                     onClick={() => handlePerformance()}>See
