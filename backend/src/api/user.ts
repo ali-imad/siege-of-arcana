@@ -86,7 +86,7 @@ router.get('/performance/:playerID', async (req, res) => {
 });
 
 // get user profile row
-router.get('/name/:elo', async (req, res) => {
+router.get('/rank/:elo', async (req, res) => {
   const { elo } = req.params;
   const eloInt = parseInt(elo);
 

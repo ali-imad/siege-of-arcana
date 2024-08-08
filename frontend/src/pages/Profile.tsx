@@ -4,14 +4,14 @@ import axios from 'axios';
 import {ToastContainer, toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-import UpdateInfo from '../components/UpdateInfo';
+import EditButton from '../components/UpdateInfo';
 
 import MatchSummaryWidget from "../components/MatchSummaryWidget";
 import {Button} from 'react-bootstrap';
 import {useParams} from "react-router-dom";
 
 const Profile = () => {
-  const { name } = useParams();
+  const {name} = useParams();
   const [userObj, setUserObj] = useState(JSON.parse(localStorage.getItem('user')));
   const [rank, setRank] = useState(null);
   const [level, setLevel] = useState(null);
@@ -42,7 +42,7 @@ const Profile = () => {
 
 
   const getRank = async (elo) => {
-    const url = `http://localhost:5151/api/user/name/${elo}`;
+    const url = `http://localhost:5151/api/user/rank/${elo}`;
     try {
       const response = await axios.get(url);
       return response.data;
@@ -110,6 +110,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchRank = async () => {
       try {
+        if (!userObj.elo) return;
         const rankData = await getRank(userObj.elo);
         setRank(rankData);
       } catch (error) {
@@ -143,20 +144,19 @@ const Profile = () => {
   }, [userObj.elo, userObj.totalxp, userObj.playerid]);
 
 
-  const ProgressBar = ({value, max, label}) => {
+  const ProgressBar = ({value, max}) => {
     const percentage = (value / max) * 100;
 
 
     return (
-      <div className="w-full max-w-md">
-        <div className="relative h-6 bg-gray-300 rounded-full overflow-hidden">
+      <div className="w-full max-w-md mt-3">
+        <div className="relative h-6 bg-gray-300 rounded-full overflow-hidden border-soa-dark border">
           <div
-            className="absolute top-0 left-0 h-full bg-blue-600 rounded-full"
+            className="flex h-full bg-blue-600 rounded-full font-bold text-soa-white text-xs place-items-center"
             style={{width: `${percentage}%`}}
-          ></div>
-        </div>
-        <div className="mt-1 text-sm text-gray-600">
-          {label} {value}/{max}
+          >
+            <div className={'mx-auto'}>{value}/{max}</div>
+          </div>
         </div>
       </div>
     );
@@ -249,7 +249,7 @@ const Profile = () => {
     fetchOptions();
   }, [userObj.playerid]);
 
-  const OutcomesComponent  = () => {
+  const OutcomesComponent = () => {
 
     const [selectedOption, setSelectedOption] = useState('');
 
@@ -280,9 +280,9 @@ const Profile = () => {
 
   const SmurfLabel = () => {
     if (smurf) {
-      return (<div className='flex flex-col w-1/2 h-full justify-start p-4'>
+      return (<div className='flex flex-col w-1/3 h-full justify-start p-4'>
         <h1 className='text-2xl font-bold text-soa-mauve'>This player is a smurf</h1>
-        <h2 className='text-sm font-bold text-soa-dark'>Win rate: {smurfWR * 100}%</h2>
+        <h2 className='text-sm font-bold text-soa-dark'>Win rate: {smurfWR.toFixed(4) * 100}%</h2>
       </div>)
     } else {
       return <></>
@@ -328,25 +328,34 @@ const Profile = () => {
     );
   };
 
+  const ProfileLabel = ({title, label}) => {
+    return (
+      <div className='text-soa-dark'>
+        <p className='inline font-bold'>{title}: </p>
+        <p className='inline'>{label}</p>
+      </div>
+    )
+  }
 
   return (
     <div className='container flex justify-between'>
       <div className='mx-8 p-4 bg-grey-100 flex flex-col justify-start'>
         <div className={'flex space-x-4 items-center justify-between'}>
           <div className={'flex flex-col w-1/3'}>
-            <div className='text-4xl font-bold'>Profile</div>
-            <div>{userObj.username}</div>
-            {rank && <div>Rank: {rank}</div>}
-            {level && <div>Level: {level}</div>}
-            {/* <ProgressBar
-      value={userObj.totalxp}
-      max={level ? (level * 1000) + 1000 : 0}
-      label={'level progress:'}/> */}
-            <UpdateInfo/>
-              <button className="w-full bg-soa-accent text-white p-1 px-2 rounded-lg mb-4"
-                      onClick={() => handlePerformance()}>See
-                Performance Analysis
-              </button>
+            <div className='flex space-x-6'> <p className='inline text-4xl font-bold'>Profile</p>
+              <EditButton />
+            </div>
+            <ProfileLabel label={userObj.username} title={'Username'}/>
+            {rank && <ProfileLabel title={'Rank'} label={rank} /> }
+            {level && <ProfileLabel title={'Level'} label={level} /> }
+            <ProgressBar
+              value={userObj.totalxp}
+              max={level ? (level * 1000) + 1000 : 0}
+              label={'Level progress:'}/>
+            <button className="w-full bg-soa-accent text-white p-1 px-2 rounded-lg my-4"
+                    onClick={() => handlePerformance()}>See
+              Performance Analysis
+            </button>
           </div>
           <SmurfLabel/>
           <OutcomesComponent/>

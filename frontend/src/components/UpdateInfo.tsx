@@ -243,7 +243,7 @@ const UpdateInfo = () => {
 
   
   return (
-    <div className='container mx-auto p-4'>
+    <div className='container mt-2'>
       <div className={`flex justify-between`}>
         <EditProfileButton onClick={handleEditProfileButton} />
       </div>
