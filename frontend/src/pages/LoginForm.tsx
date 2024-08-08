@@ -9,7 +9,9 @@ const handleAxiosError = (error) => {
     if (axios.isAxiosError(error)) {
         if (error.response) {
             if (error.response.status === 401) {
-                toast.error('Unauthorized: Invalid credentials');
+                toast.error('Unauthorized: Invalid credentials', {
+                    toastId: 'invalid_cred'
+                });
             } else {
                 toast.error(`Error: ${error.response.status} - ${error.response.data}`);
             }
@@ -26,6 +28,17 @@ const handleAxiosError = (error) => {
 
 export const getUser = async (username, password) => {
     const url = `http://localhost:5151/api/user/login`;
+    if (!username || !password) {
+        toast.error('Username and password are required', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            toastId: 'missing_cred'
+        });
+        return;
+    }
     try {
         const response = await axios.post(url, { username, password });
         return response.data;
@@ -37,6 +50,17 @@ export const getUser = async (username, password) => {
 
 const getEmail = async (email, password) => {
     const url = `http://localhost:5151/api/user/register`;
+    if (!email || !password) {
+        toast.error('Username and password are required', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            toastId: 'missing_cred'
+        });
+        return;
+    }
     try {
         const response = await axios.post(url, { email, password });
         return response.data;
@@ -84,8 +108,9 @@ const LoginForm = (props) => {
 
                     localStorage.setItem('user', JSON.stringify(user));
                     props.onLogin();
-                    navigate('/profile');
-                } else {
+                    // go to sleep
+                    new Promise((resolve) => setTimeout(resolve, 1000)).then(() => { navigate('/profile'); })
+                } else if (username === uname || username === uemail) {
                     console.log('Incorrect password');
                     toast.error('Incorrect Password. Please try again.', {
                         position: 'top-right',
@@ -130,7 +155,6 @@ const LoginForm = (props) => {
                         value={username}
                         onChange={handleUsername}
                         className="w-full px-3 py-2 border rounded"
-                        required
                     />
                 </div>
                 <div className="mb-4">
@@ -141,7 +165,6 @@ const LoginForm = (props) => {
                         value={password}
                         onChange={handlePassword}
                         className="w-full px-3 py-2 border rounded"
-                        required
                     />
                 </div>
                 <button
