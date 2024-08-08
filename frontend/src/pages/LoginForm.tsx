@@ -108,7 +108,6 @@ const LoginForm = (props) => {
 
                     localStorage.setItem('user', JSON.stringify(user));
                     props.onLogin();
-                    // go to sleep
                     new Promise((resolve) => setTimeout(resolve, 1000)).then(() => { navigate('/profile'); })
                 } else if (username === uname || username === uemail) {
                     console.log('Incorrect password');

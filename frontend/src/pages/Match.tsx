@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import {toast, ToastContainer} from "react-toastify";
 
 interface Player {
   profile: string;
@@ -41,8 +42,10 @@ const Match: React.FC = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5151/api/match/delete/${matchID}`);
-      navigate(-1);
+      toast.success('Match deleted successfully!', { autoClose: 1000 })
+      new Promise((resolve) => setTimeout(resolve, 2000)).then(() => { navigate(-1); })
     } catch (error) {
+      toast.error('Error deleting match')
       console.error('Error deleting match:', error);
     }
   };
@@ -106,6 +109,7 @@ const Match: React.FC = () => {
           </div>
         ))}
       </div>
+      <ToastContainer />
     </div>
   );
 };
