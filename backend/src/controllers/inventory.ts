@@ -8,11 +8,6 @@ import {
   ITEM_RELATION,
 } from '../interfaces/relations';
 
-export enum InventoryName {
-  Main = 'Main',
-  Gift = 'Gift Box',
-}
-
 export type ItemType = 'Consumable' | 'Equipment';
 
 export interface InventoryItem {
@@ -21,7 +16,7 @@ export interface InventoryItem {
   itemid: number;
   quantity: number;
   type: ItemType;
-  inventory: InventoryName;
+  inventory: string;
 }
 
 async function rspToInvItems(sql: string) {
@@ -66,7 +61,7 @@ export async function getAllItemsFromInventory(
 
 export async function getItemsFromInventory(
   pID: number,
-  invName: InventoryName,
+  invName: string,
 ): Promise<InventoryItem[]> {
   // from the inventory item table
   // get all titles (from item table), quantity (from inventoryitem table), category from itemcategory table from main inventory items
@@ -169,34 +164,19 @@ export async function removeItemFromInventory(
   }
 }
 
-export async function addItemToInventory(
-  invID: number,
-  itemID: number,
-  quantity: number,
-): Promise<boolean> {
-  if (await getQtyFromInv(invID, itemID)) {
-    // if item exists, update quantity
-    const updateSql = format(
-      `UPDATE %I
-      SET quantity = quantity + %L
-      WHERE invid = %L AND itemid = %L;`,
-      INVITEM_RELATION,
-      quantity,
-      invID,
-      itemID,
-    );
-    const updateRsp = await query(updateSql);
-    return !queryIsEmpty(updateRsp);
-  } else {
-    const insertSql = format(
-      `INSERT INTO %I (invid, itemid, quantity)
-    VALUES (%L, %L, %L);`,
-      INVITEM_RELATION,
-      invID,
-      itemID,
-      quantity,
-    );
-    const insertRsp = await query(insertSql);
-    return !queryIsEmpty(insertRsp);
-  }
+export async function getInvNamesFromPID(pID: number): Promise<string[]> {
+  const sql = format(
+    `SELECT invname
+    FROM %I
+    WHERE playerid = %L;`,
+    INV_RELATION,
+    pID,
+  );
+
+  const rsp = await query(sql);
+  const retArr: string[] = [];
+  rsp.rows.forEach(row => {
+    retArr.push(row.invname);
+  });
+  return retArr;
 }

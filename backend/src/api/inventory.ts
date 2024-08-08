@@ -2,9 +2,9 @@
 import express from 'express';
 import {
   getAllItemsFromInventory,
+  getInvNamesFromPID,
   getItemsFromInventory,
   InventoryItem,
-  InventoryName,
   removeItemFromInventory,
 } from '../controllers/inventory';
 import logger from '../utils/logger';
@@ -29,9 +29,9 @@ router.get('/:playerID', async (req, res) => {
   }
 });
 
-// get all items in a users main inventory
-router.get('/main/:playerID', async (req, res) => {
-  const { playerID } = req.params;
+// get all items in a users specific inventory
+router.get('/get/:invName/:playerID', async (req, res) => {
+  const { playerID, invName } = req.params;
   const pid = parseInt(playerID);
   if (!pid && pid !== 0) {
     res.status(400).json({ error: 'Invalid playerID' });
@@ -39,31 +39,7 @@ router.get('/main/:playerID', async (req, res) => {
   }
 
   try {
-    const items: InventoryItem[] = await getItemsFromInventory(
-      pid,
-      InventoryName.Main,
-    );
-    return res.json({ items });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get inventory items' });
-    return;
-  }
-});
-
-// get all items in a users giftbox
-router.get('/gift/:playerID', async (req, res) => {
-  const { playerID } = req.params;
-  const pid = parseInt(playerID);
-  if (!pid && pid !== 0) {
-    res.status(400).json({ error: 'Invalid playerID' });
-    return;
-  }
-
-  try {
-    const items: InventoryItem[] = await getItemsFromInventory(
-      pid,
-      InventoryName.Gift,
-    );
+    const items: InventoryItem[] = await getItemsFromInventory(pid, invName);
     return res.json({ items });
   } catch (error) {
     res.status(500).json({ error: 'Failed to get inventory items' });
@@ -95,6 +71,24 @@ router.post('/:invID/remove', async (req, res) => {
 
   // remove item from inventory
   res.json({ success: await removeItemFromInventory(inv, item, quantity) });
+});
+
+// get names of all inventories
+router.get('/names/:playerID', async (req, res) => {
+  const { playerID } = req.params;
+  const pid = parseInt(playerID);
+  if (!pid && pid !== 0) {
+    res.status(400).json({ error: 'Invalid playerID' });
+    return;
+  }
+
+  try {
+    const names: string[] = await getInvNamesFromPID(pid);
+    return res.json({ names });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get inventory names' });
+    return;
+  }
 });
 
 // export the router

@@ -5,11 +5,6 @@ import {toast, ToastContainer} from "react-toastify";
 
 const BE_URL = import.meta.env.VITE_BE_ROUTE;
 
-enum InventoryName { // this name must match route name
-  Main = 'Main',
-  Gift = 'Gift'
-}
-
 const ItemActions: Record<ItemType, string> = {
   'Consumable': 'Use',
   'Equipment': ''
@@ -21,7 +16,7 @@ interface InventoryItem {
   itemid: number;
   quantity: number;
   type: ItemType;
-  inventory: InventoryName;
+  inventory: string;
 }
 
 const ItemDiv = (props: { consumeItem } & InventoryItem) => {
@@ -54,14 +49,14 @@ const ItemDiv = (props: { consumeItem } & InventoryItem) => {
 };
 
 interface InventoryFilterProps {
-  filter: InventoryName | null;
-  handleFilterInventory: (inventory: InventoryName | null) => void
+  filter: string | null;
+  filters: string[];
+  handleFilterInventory: (inventory: string | null) => void
 }
 
 const InventoryFilter = (props: InventoryFilterProps) => {
   // eslint-disable-next-line no-unused-vars
-  const {filter, handleFilterInventory} = props;
-  const filters = [InventoryName.Main, InventoryName.Gift];
+  const {filter, filters, handleFilterInventory} = props;
   const colours = [['bg-soa-peach', 'text-soa-dark'], ['bg-soa-accent', 'text-soa-white']]
   return (
     <div className="fixed bottom-4 right-4 bg-white border-2 border-black rounded-full p-2 shadow-lg flex space-x-2">
@@ -77,8 +72,8 @@ const InventoryFilter = (props: InventoryFilterProps) => {
       {filters.map((f, idx) => {
         return <button className={`text-sm 
        ${f === filter ? 'font-bold' : ''}
-        ${colours[idx][0]}
-        ${colours[idx][1]}
+        ${colours[idx % 2][0]}
+        ${colours[idx % 2][1]}
         rounded-full 
         px-4 
         py-1`} onClick={() => handleFilterInventory(f)}>{f}</button>
@@ -88,12 +83,28 @@ const InventoryFilter = (props: InventoryFilterProps) => {
 }
 
 const InventoryGrid: React.FC = () => {
-  const [filter, setFilter] = useState<InventoryName | null>(null);
+  const [filter, setFilter] = useState<string | null>(null);
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [refresh, setRefresh] = useState(true);
+  const [inventories, setInventories] = useState([])
   const pid = JSON.parse(localStorage.getItem('user')).playerid
 
-  const handleFilterInventory = (inv: InventoryName) => {
+  // get user inventories
+  useEffect(() => {
+    try {
+      axios.get(`${BE_URL}/api/inventory/names/${pid}`).then((resp) => {
+        if (!resp.data.names) {
+          setInventories([])
+        } else {
+          setInventories(resp.data.names)
+        }
+      })} catch (e) {
+      toast.error('Error fetching user inventories')
+      console.error('Error fetching user inventories:', e)
+    }
+  }, []);
+
+  const handleFilterInventory = (inv: string) => {
     if (!inv || inv === filter) {
       setFilter(null);
       setRefresh(true);
@@ -131,7 +142,7 @@ const InventoryGrid: React.FC = () => {
         if (!filter) {
           resp = await axios.get(`${BE_URL}/api/inventory/${pid}`)//.then(res => res.data.items.map((item) => {
         } else {
-          resp = await axios.get(`${BE_URL}/api/inventory/${filter.toLowerCase()}/${pid}`)//.then(res => res.data.items.map((item) => {
+          resp = await axios.get(`${BE_URL}/api/inventory/get/${filter}/${pid}`)//.then(res => res.data.items.map((item) => {
         }
         const mappedItems = resp.data.items.map((item) => {
           console.log(item)
@@ -150,7 +161,7 @@ const InventoryGrid: React.FC = () => {
   return (
     <div className='container mx-auto p-4'>
       <div className='text-4xl font-bold'>Inventory</div>
-      <InventoryFilter filter={filter} handleFilterInventory={handleFilterInventory}/>
+      <InventoryFilter filter={filter} filters={inventories} handleFilterInventory={handleFilterInventory}/>
       <div className='grid grid-cols-3 gap-4 mt-4'>
         {items.map(item => (
           <ItemDiv key={item.name + item.inventory}

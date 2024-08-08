@@ -40,10 +40,6 @@ const ShopFilter = (props: ShopFilterProps) => {
   // eslint-disable-next-line no-unused-vars
   const {filter, filters, handleFilterShop} = props;
   const colours = [['bg-soa-peach', 'text-soa-dark'],
-    ['bg-soa-accent', 'text-soa-white'],
-    ['bg-soa-peach', 'text-soa-dark'],
-    ['bg-soa-accent', 'text-soa-white'],
-    ['bg-soa-peach', 'text-soa-dark'],
     ['bg-soa-accent', 'text-soa-white']]
 
   const barHover = 'fixed bottom-4 right-4'
@@ -62,8 +58,8 @@ const ShopFilter = (props: ShopFilterProps) => {
       {filters ? filters.map((f, idx) => {
         return <button className={`text-sm 
        ${f.shopid === filter ? 'font-bold' : ''}
-        ${colours[idx][0]}
-        ${colours[idx][1]}
+        ${colours[idx % 2][0]}
+        ${colours[idx % 2][1]}
         rounded-full 
         px-4 
         py-1`} onClick={() => handleFilterShop(f.shopid)}>{f.name}</button>
@@ -99,8 +95,8 @@ const ShopItemDiv = (props: ShopItem) => {
         <div className='flex space-x-4'>
           {inventories.map((inv, idx) => {
             return (<div><input type='radio' name='inventory' value={inv}
-                                                 onChange={(e) => setInv(e.target.value)}
-                                                 defaultChecked={idx === 0} className='inline'/>
+                                onChange={(e) => setInv(e.target.value)}
+                                defaultChecked={idx === 0} className='inline'/>
               <label htmlFor={inv} className='px-2 text-xs'>{inv}</label>
             </div>)
           })}
@@ -214,6 +210,7 @@ const Shop = () => {
   const [showRawHistory, setShowRawHistory] = useState<boolean>(false);
   const [balances, setBalances] = useState<Balance[]>([]);
   const [refresh, setRefresh] = useState<boolean>(true);
+  const [inventories, setInventories] = useState([])
   const pid = JSON.parse(localStorage.getItem('user')).playerid
 
   const handleTxHistoryButton = () => {
@@ -223,6 +220,22 @@ const Shop = () => {
   const handleRawHistoryButton = () => {
     setShowRawHistory(!showRawHistory);
   };
+
+  // get user inventories
+  useEffect(() => {
+    try {
+      axios.get(`${BE_URL}/api/inventory/names/${pid}`).then((resp) => {
+        if (!resp.data.names) {
+          setInventories([])
+        } else {
+          setInventories(resp.data.names)
+        }
+      })
+    } catch (e) {
+      toast.error('Error fetching user inventories')
+      console.error('Error fetching user inventories:', e)
+    }
+  }, []);
 
   // get user balances
   useEffect(() => {

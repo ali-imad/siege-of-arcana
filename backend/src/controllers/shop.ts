@@ -2,7 +2,7 @@ import format from 'pg-format';
 import logger from '../utils/logger';
 import { queryIsEmpty, query, queryTx } from '../services/db';
 import { getCurrBalance } from './wallet';
-import { getInvIdFromPID, getQtyFromInv, InventoryName } from './inventory';
+import { getInvIdFromPID, getQtyFromInv } from './inventory';
 import {
   BALANCE_RELATION,
   CATEGORY_RELATION,
