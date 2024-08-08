@@ -68,23 +68,22 @@ const ShopFilter = (props: ShopFilterProps) => {
   );
 }
 
-const ShopItemDiv = (props: ShopItem) => {
-  const inventories = ['Main', 'Gift Box']
+const ShopItemDiv = (props: {inventories} & ShopItem) => {
+  const {name, itemid, price, currency, shop, inventories, onSubmit} = props;
   const [qty, setQty] = useState(0);
   const [inv, setInv] = useState(inventories[0]);
-  const {name, itemid, price, currency, shop, onSubmit} = props;
   // console.log(`ShopItemDiv: ${name} ${itemid} ${price} ${currency} ${shop.name} ${shop.shopid}`)
   const handleSpinnerChange = (val) => setQty(val);
   return (
-    <div className='flex justify-between bg-white border-2 border-soa-peach rounded-lg p-8 shadow-shopListing'>
-      <div className={'flex flex-col space-y-1'}>
+    <div className='flex justify-between bg-white border-2 border-soa-peach rounded-lg p-4 shadow-shopListing'>
+      <div className={'flex flex-col space-y-1 p-4'}>
         <div className='text-xs mt-2'><p className={'font-bold inline'}>Shop:</p> {shop.name}</div>
         <div className='text-lg font-bold'>{name}</div>
         <div className='text-sm mt-2'><p className={'font-bold inline'}>Price:</p> {price} {currency}</div>
       </div>
       <form className={'flex flex-col space-y-2 justify-between'}
             onSubmit={(e) => onSubmit(shop.shopid, itemid, qty, inv, e)}>
-        <div className='flex items-center space-x-5 mx-2'>
+        <div className='flex items-center space-x-5 mx-2 mt-4'>
           <input type='number' onChange={(e) => handleSpinnerChange(e.target.value)} min={1} max={99} defaultValue={1}
                  className={`border-2 border-soa-dark translate-y-2 text-center p-2`}/>
           <button
@@ -92,7 +91,7 @@ const ShopItemDiv = (props: ShopItem) => {
             Purchase
           </button>
         </div>
-        <div className='flex space-x-4'>
+        <div className='flex space-x-4 justify-between'>
           {inventories.map((inv, idx) => {
             return (<div><input type='radio' name='inventory' value={inv}
                                 onChange={(e) => setInv(e.target.value)}
@@ -414,6 +413,21 @@ const Shop = () => {
     })
   }
 
+  // get user inventories
+  useEffect(() => {
+    try {
+      axios.get(`${BE_URL}/api/inventory/names/${pid}`).then((resp) => {
+        if (!resp.data.names) {
+          setInventories([])
+        } else {
+          setInventories(resp.data.names)
+        }
+      })} catch (e) {
+      toast.error('Error fetching user inventories')
+      console.error('Error fetching user inventories:', e)
+    }
+  }, []);
+
   return (
     <div className='container mx-auto p-4'>
       <BalanceWidget balances={balances}/>
@@ -433,7 +447,7 @@ const Shop = () => {
       </div>
       <div className='grid grid-cols-3 gap-4 mt-4'>
         {items.map(item => (
-          <ShopItemDiv key={item.name + item.shop.shopid} onSubmit={purchaseItem} {...item} />
+          <ShopItemDiv key={item.name + item.shop.shopid} inventories={inventories} onSubmit={purchaseItem} {...item} />
         ))}
       </div>
       {showTxHistory && (
