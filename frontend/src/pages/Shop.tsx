@@ -358,15 +358,22 @@ const Shop = () => {
     }
     axios.post(`${BE_URL}/api/shop/buy`, purchaseReq).then((resp) => {
       setRefresh(true);
-      toast.success('Purchase successful!', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-      })
-      // TODO: add toast notif
-      // console.log(resp.data)
+      if (resp.data.success === 1)
+        toast.success('Purchase successful!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+      else
+        toast.error('Error purchasing item', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+        })
     }).catch((err) => {
       toast.error('Error purchasing item', {
         position: 'top-right',
@@ -409,7 +416,7 @@ const Shop = () => {
         />
       )}
       {showRawHistory && (
-        <ModularRelationTable pid={pid} onClose={() => setShowRawHistory(false)} />
+        <ModularRelationTable pid={pid} onClose={() => setShowRawHistory(false)}/>
       )}
       <ToastContainer/>
     </div>

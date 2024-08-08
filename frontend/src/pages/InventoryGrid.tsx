@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {ItemType} from "../interfaces/ItemType.tsx";
 import axios from "axios";
+import {toast, ToastContainer} from "react-toastify";
 
 const BE_URL = import.meta.env.VITE_BE_ROUTE;
 
@@ -107,7 +108,12 @@ const InventoryGrid: React.FC = () => {
         quantity: quantity
       }
       console.log(`Using item in inventory ${invid} with item id ${itemid} and quantity ${quantity}`)
-      await axios.post(`${BE_URL}/api/inventory/${invid}/remove`, req);
+      await axios.post(`${BE_URL}/api/inventory/${invid}/remove`, req).then((res) => {
+        if (res.data.success) toast.success("Item consumed successfully!");
+        else toast.error("Error consuming item");
+      }).catch(() => {
+        toast.error("Error consuming item")
+      })
       setRefresh(true);
     } catch (error) {
       console.error('Error using item:', error)
@@ -149,6 +155,7 @@ const InventoryGrid: React.FC = () => {
                    consumeItem={(qty) => handleUseItem(item.invid, item.itemid, qty)} {...item} />
         ))}
       </div>
+      <ToastContainer/>
     </div>
   );
 };
