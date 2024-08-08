@@ -368,7 +368,7 @@ const Profile = () => {
             </div>
             <ProfileLabel label={userObj.username} title={'Username'}/>
             {rank && <ProfileLabel title={'Rank'} label={rank} /> }
-            {level && <ProfileLabel title={'Level'} label={level} /> }
+            {<ProfileLabel title={'Level'} label={level ? level : Math.floor(userObj.totalxp / 1000)} /> }
             <ProgressBar
               value={userObj.totalxp}
               max={userObj.totalxp + 1000 - (userObj.totalxp % 1000)}
